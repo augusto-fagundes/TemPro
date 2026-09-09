@@ -5,6 +5,7 @@
   "description": "TemPro — API do marketplace de prestadores de serviço locais",
   "scripts": {
     "dev": "tsx watch src/index.ts",
+    "postinstall": "prisma generate",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
