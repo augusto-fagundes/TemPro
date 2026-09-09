@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String
+  providerId   String   @unique @map("provider_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  provider     Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@map("users")
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  plural    String
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  services  Service[]
+
+  @@index([sortOrder])
+  @@map("categories")
+}
+
+model Provider {
+  id           String   @id
+  name         String
+  category     String
+  description  String
+  city          String
+  serviceCities String[] @default([]) @map("service_cities")
+  mode          String
+  listingPrice  String   @default("") @map("listing_price")
+  about        String   @default("")
+  address      String?
+  photoUrl     String?  @map("photo_url")
+  whatsapp     String?
+  phone        String?
+  instagram    String?
+  sortOrder    Int      @default(0) @map("sort_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  user     User?
+  services Service[]
+  photos   ProviderPhoto[]
+  products Product[]
+
+  @@index([city])
+  @@index([category])
+  @@index([sortOrder])
+  @@map("providers")
+}
+
+model ProviderPhoto {
+  id         Int      @id @default(autoincrement())
+  providerId String   @map("provider_id")
+  url        String
+  sortOrder  Int      @default(0) @map("sort_order")
+  provider   Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@index([providerId])
+  @@map("provider_photos")
+}
+
+model Service {
+  id           Int      @id @default(autoincrement())
+  providerId   String   @map("provider_id")
+  categoryId   Int      @map("category_id")
+  name         String
+  description  String   @default("")
+  mode         String
+  priceType    String   @map("price_type")
+  priceAmount  String   @default("") @map("price_amount")
+  displayPrice String   @map("display_price")
+  sortOrder    Int      @default(0) @map("sort_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  provider     Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  category     Category @relation(fields: [categoryId], references: [id])
+
+  @@index([providerId])
+  @@index([categoryId])
+  @@map("services")
+}
+
+model Product {
+  id           Int      @id @default(autoincrement())
+  providerId   String   @map("provider_id")
+  name         String
+  category     String
+  description  String   @default("")
+  priceType    String   @map("price_type")
+  priceAmount  String   @default("") @map("price_amount")
+  displayPrice String   @map("display_price")
+  photoUrl     String?  @map("photo_url")
+  sortOrder    Int      @default(0) @map("sort_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  provider     Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@index([providerId])
+  @@map("products")
+}

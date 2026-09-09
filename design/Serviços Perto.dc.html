@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/modernist-a3a20f16-426d-4dd3-be1b-a1dca4bdaebb/styles.css">
+<script src="_ds/modernist-a3a20f16-426d-4dd3-be1b-a1dca4bdaebb/_ds_bundle.js"></script>
+<script src="./image-slot.js"></script>
+<style>
+  body { background: #e6e4e2; }
+  a { color: var(--color-accent-700); }
+  a:hover { color: var(--color-accent); }
+  .sp-scroll::-webkit-scrollbar { width: 0; height: 0; }
+</style>
+</helmet>
+<div style="min-height:100vh;padding:40px;box-sizing:border-box;font-family:var(--font-body);color:var(--color-text)">
+  <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:28px">
+    <div style="font-family:var(--font-heading);font-weight:800;font-size:22px;letter-spacing:-0.02em">Serviços Perto</div>
+    <div style="font-size:13px;color:var(--color-neutral-700)">Mockup navegável do MVP — buscar, encontrar, visualizar, entrar em contato.</div>
+  </div>
+
+  <div style="display:flex;gap:56px;align-items:flex-start;flex-wrap:wrap">
+
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-neutral-700)">Área pública · mobile</div>
+        <div style="display:flex;gap:6px">
+          <button onClick="{{ goHome }}" style="border:1px solid var(--color-neutral-300);background:#fff;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer" style-hover="border-color:var(--color-accent);color:var(--color-accent)">Home</button>
+          <button onClick="{{ goResultsAll }}" style="border:1px solid var(--color-neutral-300);background:#fff;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer" style-hover="border-color:var(--color-accent);color:var(--color-accent)">Resultados</button>
+          <button onClick="{{ goProfileDefault }}" style="border:1px solid var(--color-neutral-300);background:#fff;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer" style-hover="border-color:var(--color-accent);color:var(--color-accent)">Perfil</button>
+        </div>
+      </div>
+
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" width="{{ 402 }}" height="{{ 860 }}" hint-size="402px,860px">
+        <div class="sp-scroll" style="min-height:100%;background:#f7f6f5;padding:0 0 42px">
+
+          <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+            <div>
+              <div style="display:flex;align-items:center;gap:10px;padding:60px 20px 14px">
+                <span style="width:12px;height:12px;border-radius:3px;background:var(--color-accent);display:block"></span>
+                <span style="font-family:var(--font-heading);font-weight:800;font-size:15px;letter-spacing:-0.01em;flex:1">Serviços Perto</span>
+              </div>
+
+              <div style="padding:14px 20px 4px">
+                <h1 style="font-size:34px;line-height:1.05;letter-spacing:-0.03em;margin:0 0 10px">Encontre quem resolve.</h1>
+                <p style="margin:0;font-size:15px;line-height:1.5;color:var(--color-neutral-700);max-width:300px;text-wrap:pretty">Profissionais e serviços perto de você, em poucos cliques.</p>
+              </div>
+
+              <div style="margin:18px 20px 0;background:#fff;border-radius:18px;padding:14px;box-shadow:0 6px 20px rgba(32,30,29,0.08);display:flex;flex-direction:column;gap:10px">
+                <input value="{{ q }}" onChange="{{ onQuery }}" onKeyDown="{{ onQueryKey }}" placeholder="Qual serviço você procura?" style="width:100%;min-height:48px;border:1px solid var(--color-neutral-300);border-radius:12px;padding:0 14px;font:inherit;font-size:15px;background:#fbfafa;box-sizing:border-box" />
+                <div style="font-size:12px;color:var(--color-neutral-600);line-height:1.45">Busque por categoria, cidade ou nome — “eletricista joão”, “vidraceiro”, “Lajeado”.</div>
+                <select value="{{ city }}" onChange="{{ onCity }}" style="width:100%;min-height:48px;border:1px solid var(--color-neutral-300);border-radius:12px;padding:0 12px;font:inherit;font-size:15px;background:#fbfafa;color:var(--color-text);box-sizing:border-box">
+                  <option>Santa Cruz do Sul - RS</option>
+                  <option>Venâncio Aires - RS</option>
+                  <option>Lajeado - RS</option>
+                  <option>Todas as cidades</option>
+                </select>
+                <button onClick="{{ onSearch }}" style="width:100%;min-height:50px;border:0;border-radius:12px;background:var(--color-accent);color:#fff;font-family:var(--font-heading);font-weight:800;font-size:16px;cursor:pointer" style-hover="background:var(--color-accent-600)" style-active="background:var(--color-accent-700)">Buscar</button>
+              </div>
+
+              <div style="padding:28px 20px 0">
+                <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-neutral-700);margin-bottom:12px">Categorias populares</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                  <sc-for list="{{ cats }}" as="c" hint-placeholder-count="8">
+                    <button onClick="{{ c.onClick }}" style="text-align:left;background:#fff;border:1px solid var(--color-neutral-200);border-radius:14px;padding:14px 12px;min-height:76px;font:inherit;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;gap:6px" style-hover="border-color:var(--color-accent);box-shadow:0 4px 14px rgba(32,30,29,0.08)">
+                      <span style="font-family:var(--font-heading);font-weight:800;font-size:15px;line-height:1.15">{{ c.name }}</span>
+                      <span style="font-size:12px;color:var(--color-neutral-600)">{{ c.count }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div style="padding:28px 20px 0">
+                <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-neutral-700);margin-bottom:12px">Profissionais em destaque</div>
+                <div style="display:flex;flex-direction:column;gap:12px">
+                  <sc-for list="{{ featured }}" as="p" hint-placeholder-count="2">
+                    <div style="background:#fff;border-radius:16px;padding:14px;box-shadow:0 4px 16px rgba(32,30,29,0.07);display:flex;flex-direction:column;gap:10px">
+                      <div style="display:flex;gap:12px;align-items:center">
+                        <div style="width:52px;height:52px;flex:none;border-radius:14px;overflow:hidden;background:var(--color-neutral-200)">
+                          <image-slot id="{{ p.slotId }}" shape="rounded" radius="14" placeholder="Foto"></image-slot>
+                        </div>
+                        <div style="min-width:0">
+                          <div style="font-family:var(--font-heading);font-weight:800;font-size:17px;line-height:1.15">{{ p.name }}</div>
+                          <div style="font-size:13px;color:var(--color-accent-700)">{{ p.category }}</div>
+                        </div>
+                      </div>
+                      <p style="margin:0;font-size:13px;line-height:1.5;color:var(--color-neutral-700)">{{ p.desc }}</p>
+                      <div style="display:flex;flex-wrap:wrap;gap:6px;font-size:12px;color:var(--color-neutral-700)">
+                        <span style="background:#f2f0ef;border-radius:999px;padding:4px 10px">{{ p.city }}</span>
+                        <span style="background:#f2f0ef;border-radius:999px;padding:4px 10px">{{ p.mode }}</span>
+                      </div>
+                      <sc-if value="{{ p.hasPrice }}" hint-placeholder-val="{{ true }}">
+                        <div style="font-family:var(--font-heading);font-weight:800;font-size:15px">{{ p.price }}</div>
+                      </sc-if>
+                      <div style="display:flex;gap:8px">
+                        <button onClick="{{ p.onView }}" style="flex:1;min-height:44px;border:1px solid var(--color-neutral-300);background:#fff;border-radius:12px;font:inherit;font-weight:600;font-size:14px;cursor:pointer" style-hover="border-color:var(--color-text)">Ver perfil</button>
+                        <button onClick="{{ p.onWhats }}" style="flex:1;min-height:44px;border:0;background:var(--color-accent);color:#fff;border-radius:12px;font-family:var(--font-heading);font-weight:800;font-size:14px;cursor:pointer" style-hover="background:var(--color-accent-600)">WhatsApp</button>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isResults }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="position:sticky;top:0;z-index:5;background:#f7f6f5;padding:60px 20px 12px;border-bottom:1px solid var(--color-neutral-200)">
+                <button onClick="{{ goHome }}" style="border:0;background:transparent;padding:0;font:inherit;font-size:13px;color:var(--color-accent-700);cursor:pointer;margin-bottom:10px">← Nova busca</button>
+                <h2 style="font-size:24px;line-height:1.1;letter-spacing:-0.02em;margin:0 0 4px">{{ resultsTitle }}</h2>
+                <div style="font-size:13px;color:var(--color-neutral-700)">{{ resultsCount }}</div>
+                <input value="{{ q }}" onChange="{{ onQuery }}" placeholder="Categoria, cidade ou nome" style="width:100%;min-height:44px;border:1px solid var(--color-neutral-300);border-radius:12px;padding:0 14px;margin-top:12px;font:inherit;font-size:14px;background:#fff;box-sizing:border-box" />
+                <div class="sp-scroll" style="display:flex;gap:8px;margin-top:8px;overflow-x:auto;padding-bottom:2px">
+                  <select value="{{ cat }}" onChange="{{ onCat }}" style="flex:none;min-height:38px;border:1px solid var(--color-neutral-300);border-radius:999px;padding:0 12px;font:inherit;font-size:13px;background:#fff;color:var(--color-text)">
+                    <option>Todas as categorias</option>
+                    <option>Eletricista</option>
+                    <option>Encanador</option>
+                    <option>Vidraceiro</option>
+                    <option>Pintor</option>
+                    <option>Ar-condicionado</option>
+                    <option>Jardinagem</option>
+                    <option>Informática</option>
+                    <option>Limpeza</option>
+                  </select>
+                  <select value="{{ city }}" onChange="{{ onCity }}" style="flex:none;min-height:38px;border:1px solid var(--color-neutral-300);border-radius:999px;padding:0 12px;font:inherit;font-size:13px;background:#fff;color:var(--color-text)">
+                    <option>Santa Cruz do Sul - RS</option>
+                    <option>Venâncio Aires - RS</option>
+                    <option>Lajeado - RS</option>
+                    <option>Todas as cidades</option>
+                  </select>
+                  <select value="{{ mode }}" onChange="{{ onMode }}" style="flex:none;min-height:38px;border:1px solid var(--color-neutral-300);border-radius:999px;padding:0 12px;font:inherit;font-size:13px;background:#fff;color:var(--color-text)">
+                    <option>Todos</option>
+                    <option>Atende em domicílio</option>
+                    <option>Possui estabelecimento</option>
+                    <option>Ambos</option>
+                  </select>
+                  <button onClick="{{ onPriceOnly }}" style="flex:none;min-height:38px;border:1px solid var(--color-neutral-300);border-radius:999px;padding:0 14px;font:inherit;font-size:13px;background:{{ priceChipBg }};color:{{ priceChipFg }};cursor:pointer;white-space:nowrap">Com preço informado</button>
+                </div>
+              </div>
+
+              <div style="padding:16px 20px 0;display:flex;flex-direction:column;gap:12px">
+                <sc-for list="{{ results }}" as="p" hint-placeholder-count="3">
+                  <div style="background:#fff;border-radius:16px;padding:14px;box-shadow:0 4px 16px rgba(32,30,29,0.07);display:flex;flex-direction:column;gap:10px">
+                    <div style="display:flex;gap:12px;align-items:center">
+                      <div style="width:52px;height:52px;flex:none;border-radius:14px;overflow:hidden;background:var(--color-neutral-200)">
+                        <image-slot id="{{ p.slotId }}" shape="rounded" radius="14" placeholder="Foto"></image-slot>
+                      </div>
+                      <div style="min-width:0">
+                        <div style="font-family:var(--font-heading);font-weight:800;font-size:17px;line-height:1.15">{{ p.name }}</div>
+                        <div style="font-size:13px;color:var(--color-accent-700)">{{ p.category }}</div>
+                      </div>
+                    </div>
+                    <p style="margin:0;font-size:13px;line-height:1.5;color:var(--color-neutral-700)">{{ p.desc }}</p>
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;font-size:12px;color:var(--color-neutral-700)">
+                      <span style="background:#f2f0ef;border-radius:999px;padding:4px 10px">{{ p.city }}</span>
+                      <span style="background:#f2f0ef;border-radius:999px;padding:4px 10px">{{ p.mode }}</span>
+                    </div>
+                    <sc-if value="{{ p.hasPrice }}" hint-placeholder-val="{{ true }}">
+                      <div style="font-family:var(--font-heading);font-weight:800;font-size:15px">{{ p.price }}</div>
+                    </sc-if>
+                    <div style="display:flex;gap:8px">
+                      <button onClick="{{ p.onView }}" style="flex:1;min-height:44px;border:1px solid var(--color-neutral-300);background:#fff;border-radius:12px;font:inherit;font-weight:600;font-size:14px;cursor:pointer" style-hover="border-color:var(--color-text)">Ver perfil</button>
+                      <button onClick="{{ p.onWhats }}" style="flex:1;min-height:44px;border:0;background:var(--color-accent);color:#fff;border-radius:12px;font-family:var(--font-heading);font-weight:800;font-size:14px;cursor:pointer" style-hover="background:var(--color-accent-600)">WhatsApp</button>
+                    </div>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+                  <div style="background:#fff;border-radius:16px;padding:24px 16px;text-align:left">
+                    <div style="font-family:var(--font-heading);font-weight:800;font-size:17px;margin-bottom:6px">Nenhum profissional encontrado</div>
+                    <p style="margin:0;font-size:13px;color:var(--color-neutral-700)">Tente outra categoria ou amplie a cidade para “Todas as cidades”.</p>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="padding:56px 20px 0">
+                <button onClick="{{ goBackResults }}" style="border:0;background:transparent;padding:0;font:inherit;font-size:13px;color:var(--color-accent-700);cursor:pointer">← Voltar</button>
+              </div>
+              <div style="padding:16px 20px 0;display:flex;gap:14px;align-items:center">
+                <div style="width:76px;height:76px;flex:none;border-radius:20px;overflow:hidden;background:var(--color-neutral-200)">
+                  <image-slot id="{{ sel.slotId }}" shape="rounded" radius="20" placeholder="Logotipo"></image-slot>
+                </div>
+                <div style="min-width:0">
+                  <h2 style="font-size:24px;line-height:1.1;letter-spacing:-0.02em;margin:0 0 4px">{{ sel.name }}</h2>
+                  <div style="font-size:14px;color:var(--color-accent-700)">{{ sel.category }}</div>
+                  <div style="font-size:13px;color:var(--color-neutral-700)">{{ sel.city }}</div>
+                </div>
+              </div>
+              <div style="padding:12px 20px 0">
+                <span style="display:inline-block;background:var(--color-accent-100);color:var(--color-accent-800);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:600">{{ sel.mode }}</span>
+              </div>
+
+              <div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:8px">
+                <button onClick="{{ onWhatsSel }}" style="width:100%;min-height:50px;border:0;border-radius:14px;background:var(--color-accent);color:#fff;font-family:var(--font-heading);font-weight:800;font-size:16px;cursor:pointer" style-hover="background:var(--color-accent-600)">WhatsApp</button>
+                <div style="display:flex;gap:8px">
+                  <button onClick="{{ onCall }}" style="flex:1;min-height:46px;border:1px solid var(--color-neutral-300);background:#fff;border-radius:14px;font:inherit;font-weight:600;font-size:14px;cursor:pointer" style-hover="border-color:var(--color-text)">Ligar</button>
+                  <button onClick="{{ onInsta }}" style="flex:1;min-height:46px;border:1px solid var(--color-neutral-300);background:#fff;border-radius:14px;font:inherit;font-weight:600;font-size:14px;cursor:pointer" style-hover="border-color:var(--color-text)">Instagram</button>
+                </div>
+              </div>
+
+              <div style="padding:26px 20px 0">
+                <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-neutral-700);margin-bottom:8px">Sobre</div>
+                <p style="margin:0;font-size:14px;line-height:1.6;color:var(--color-text);text-wrap:pretty">{{ sel.about }}</p>
+              </div>
+
+              <div style="padding:26px 20px 0">
+                <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-neutral-700);margin-bottom:12px">Serviços</div>
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <sc-for list="{{ selServices }}" as="s" hint-placeholder-count="2">
+                    <div style="background:#fff;border-radius:16px;padding:14px;box-shadow:0 4px 16px rgba(32,30,29,0.07)">
+                      <div style="font-family:var(--font-heading);font-weight:800;font-size:16px;margin-bottom:4px">{{ s.name }}</div>
+                      <p style="margin:0 0 10px;font-size:13px;line-height:1.5;color:var(--color-neutral-700)">{{ s.desc }}</p>
+                      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+                        <span style="font-size:12px;color:var(--color-neutral-700);background:#f2f0ef;border-radius:999px;padding:4px 10px">{{ s.mode }}</span>
+                        <span style="font-family:var(--font-heading);font-weight:800;font-size:15px">{{ s.price }}</span>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <sc-if value="{{ showGallery }}" hint-placeholder-val="{{ true }}">
+                <div style="padding:26px 20px 0">
+                  <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-neutral-700);margin-bottom:12px">Trabalhos realizados</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                    <div style="height:104px;border-radius:14px;overflow:hidden;background:var(--color-neutral-200)"><image-slot id="sp-work-1" shape="rounded" radius="14" placeholder="Trabalho 1"></image-slot></div>
+                    <div style="height:104px;border-radius:14px;overflow:hidden;background:var(--color-neutral-200)"><image-slot id="sp-work-2" shape="rounded" radius="14" placeholder="Trabalho 2"></image-slot></div>
+                    <div style="height:104px;border-radius:14px;overflow:hidden;background:var(--color-neutral-200)"><image-slot id="sp-work-3" shape="rounded" radius="14" placeholder="Trabalho 3"></image-slot></div>
+                    <div style="height:104px;border-radius:14px;overflow:hidden;background:var(--color-neutral-200)"><image-slot id="sp-work-4" shape="rounded" radius="14" placeholder="Trabalho 4"></image-slot></div>
+                  </div>
+                </div>
+              </sc-if>
+
+              <div style="padding:26px 20px 0">
+                <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-neutral-700);margin-bottom:12px">Atendimento</div>
+                <div style="background:#fff;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 4px 16px rgba(32,30,29,0.07)">
+                  <div style="display:flex;justify-content:space-between;gap:12px;font-size:14px"><span style="color:var(--color-neutral-700)">Região atendida</span><span style="font-weight:600;text-align:right">{{ sel.city }}</span></div>
+                  <div style="height:1px;background:var(--color-neutral-200)"></div>
+                  <div style="display:flex;justify-content:space-between;gap:12px;font-size:14px"><span style="color:var(--color-neutral-700)">Forma</span><span style="font-weight:600;text-align:right">{{ sel.mode }}</span></div>
+                  <sc-if value="{{ sel.hasAddress }}" hint-placeholder-val="{{ false }}">
+                    <div>
+                      <div style="height:1px;background:var(--color-neutral-200);margin-bottom:10px"></div>
+                      <div style="display:flex;justify-content:space-between;gap:12px;font-size:14px"><span style="color:var(--color-neutral-700)">Endereço</span><span style="font-weight:600;text-align:right">{{ sel.address }}</span></div>
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+
+              <div style="padding:24px 20px 0">
+                <button onClick="{{ onWhatsSel }}" style="width:100%;min-height:52px;border:0;border-radius:14px;background:var(--color-accent);color:#fff;font-family:var(--font-heading);font-weight:800;font-size:16px;cursor:pointer" style-hover="background:var(--color-accent-600)">Falar pelo WhatsApp</button>
+              </div>
+            </div>
+          </sc-if>
+
+        </div>
+      </x-import>
+    </div>
+
+    <sc-if value="{{ showAdmin }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-neutral-700)">Área do prestador · desktop</div>
+        <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" width="{{ 1080 }}" height="{{ 720 }}" url="servicosperto.com.br/painel" hint-size="1080px,720px">
+          <div style="display:flex;height:100%;background:#f7f6f5;font-family:var(--font-body);color:var(--color-text)">
+            <div style="flex:none;width:240px;background:#fff;border-right:1px solid var(--color-neutral-200);padding:20px 14px;display:flex;flex-direction:column;gap:4px">
+              <div style="display:flex;align-items:center;gap:9px;padding:0 8px 18px">
+                <span style="width:12px;height:12px;border-radius:3px;background:var(--color-accent);display:block"></span>
+                <span style="font-family:var(--font-heading);font-weight:800;font-size:15px">Serviços Perto</span>
+              </div>
+              <button onClick="{{ goOverview }}" style="text-align:left;border:0;border-radius:10px;padding:11px 12px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;background:{{ navOverviewBg }};color:{{ navOverviewFg }}">Visão geral</button>
+              <button onClick="{{ goMyServices }}" style="text-align:left;border:0;border-radius:10px;padding:11px 12px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;background:{{ navServicesBg }};color:{{ navServicesFg }}">Meus serviços</button>
+              <button onClick="{{ onSoon }}" style="text-align:left;border:0;border-radius:10px;padding:11px 12px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;background:transparent;color:var(--color-neutral-700)" style-hover="background:#f2f0ef">Meu perfil</button>
+              <button onClick="{{ goProfileDefault }}" style="text-align:left;border:0;border-radius:10px;padding:11px 12px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;background:transparent;color:var(--color-neutral-700)" style-hover="background:#f2f0ef">Visualizar perfil público</button>
+              <div style="flex:1"></div>
+              <button onClick="{{ onSoon }}" style="text-align:left;border:0;border-radius:10px;padding:11px 12px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;background:transparent;color:var(--color-neutral-700)" style-hover="background:#f2f0ef">Sair</button>
+            </div>
+
+            <div class="sp-scroll" style="flex:1;min-width:0;overflow:auto;padding:32px 36px">
+
+              <sc-if value="{{ adminOverview }}" hint-placeholder-val="{{ true }}">
+                <div style="max-width:760px">
+                  <h2 style="font-size:32px;letter-spacing:-0.02em;margin:0 0 8px">Olá, João 👋</h2>
+                  <p style="margin:0 0 28px;font-size:15px;color:var(--color-neutral-700)">Gerencie seu perfil e os serviços que aparecem para os clientes.</p>
+                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px">
+                    <div style="background:#fff;border-radius:18px;padding:20px;box-shadow:0 4px 16px rgba(32,30,29,0.07);display:flex;flex-direction:column;gap:10px;align-items:flex-start">
+                      <div style="font-family:var(--font-heading);font-weight:800;font-size:19px">Meu perfil</div>
+                      <span style="background:var(--color-accent-100);color:var(--color-accent-800);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600">Perfil publicado</span>
+                      <button onClick="{{ onSoon }}" style="margin-top:6px;min-height:44px;width:max-content;white-space:nowrap;border:1px solid var(--color-neutral-300);background:#fff;border-radius:12px;padding:0 16px;font:inherit;font-weight:600;font-size:14px;cursor:pointer" style-hover="border-color:var(--color-text)">Editar perfil</button>
+                    </div>
+                    <div style="background:#fff;border-radius:18px;padding:20px;box-shadow:0 4px 16px rgba(32,30,29,0.07);display:flex;flex-direction:column;gap:10px;align-items:flex-start">
+                      <div style="font-family:var(--font-heading);font-weight:800;font-size:19px">Meus serviços</div>
+                      <div style="font-size:14px;color:var(--color-neutral-700)">{{ serviceCountLabel }}</div>
+                      <button onClick="{{ goMyServices }}" style="margin-top:6px;min-height:44px;width:max-content;white-space:nowrap;border:1px solid var(--color-neutral-300);background:#fff;border-radius:12px;padding:0 16px;font:inherit;font-weight:600;font-size:14px;cursor:pointer" style-hover="border-color:var(--color-text)">Gerenciar serviços</button>
+                    </div>
+                  </div>
+                  <button onClick="{{ goProfileDefault }}" style="margin-top:24px;min-height:50px;border:0;border-radius:14px;background:var(--color-accent);color:#fff;padding:0 22px;font-family:var(--font-heading);font-weight:800;font-size:15px;cursor:pointer" style-hover="background:var(--color-accent-600)">Visualizar meu perfil público</button>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ adminServices }}" hint-placeholder-val="{{ false }}">
+                <div style="max-width:820px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px">
+                    <h2 style="font-size:30px;letter-spacing:-0.02em;margin:0">Meus serviços</h2>
+                    <button onClick="{{ goNewService }}" style="min-height:46px;border:0;border-radius:12px;background:var(--color-accent);color:#fff;padding:0 18px;font-family:var(--font-heading);font-weight:800;font-size:14px;cursor:pointer" style-hover="background:var(--color-accent-600)">+ Novo serviço</button>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:12px">
+                    <sc-for list="{{ myServices }}" as="s" hint-placeholder-count="3">
+                      <div style="background:#fff;border-radius:16px;padding:18px;box-shadow:0 4px 16px rgba(32,30,29,0.07);display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+                        <div style="flex:1;min-width:220px">
+                          <div style="font-family:var(--font-heading);font-weight:800;font-size:18px;margin-bottom:6px">{{ s.name }}</div>
+                          <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--color-neutral-700)">
+                            <span style="background:#f2f0ef;border-radius:999px;padding:4px 10px">{{ s.category }}</span>
+                            <span style="background:#f2f0ef;border-radius:999px;padding:4px 10px">{{ s.mode }}</span>
+                          </div>
+                        </div>
+                        <div style="font-family:var(--font-heading);font-weight:800;font-size:16px;min-width:150px">{{ s.price }}</div>
+                        <div style="display:flex;gap:8px">
+                          <button onClick="{{ onSoon }}" style="min-height:42px;border:1px solid var(--color-neutral-300);background:#fff;border-radius:11px;padding:0 14px;font:inherit;font-weight:600;font-size:14px;cursor:pointer" style-hover="border-color:var(--color-text)">Editar</button>
+                          <button onClick="{{ s.onDelete }}" style="min-height:42px;border:1px solid var(--color-neutral-300);background:#fff;border-radius:11px;padding:0 14px;font:inherit;font-weight:600;font-size:14px;color:var(--color-accent-700);cursor:pointer" style-hover="border-color:var(--color-accent);background:var(--color-accent-100)">Excluir</button>
+                        </div>
+                      </div>
+                    </sc-for>
+                    <sc-if value="{{ noServices }}" hint-placeholder-val="{{ false }}">
+                      <div style="background:#fff;border-radius:16px;padding:28px">
+                        <div style="font-family:var(--font-heading);font-weight:800;font-size:18px;margin-bottom:6px">Nenhum serviço cadastrado</div>
+                        <p style="margin:0;font-size:14px;color:var(--color-neutral-700)">Cadastre um serviço para aparecer nas buscas.</p>
+                      </div>
+                    </sc-if>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ adminNew }}" hint-placeholder-val="{{ false }}">
+                <div style="max-width:680px">
+                  <button onClick="{{ goMyServices }}" style="border:0;background:transparent;padding:0;font:inherit;font-size:13px;color:var(--color-accent-700);cursor:pointer;margin-bottom:12px">← Meus serviços</button>
+                  <h2 style="font-size:30px;letter-spacing:-0.02em;margin:0 0 24px">Cadastrar serviço</h2>
+                  <div style="background:#fff;border-radius:18px;padding:24px;box-shadow:0 4px 16px rgba(32,30,29,0.07);display:flex;flex-direction:column;gap:18px">
+                    <div>
+                      <label style="display:block;font-size:12px;color:var(--color-neutral-700);margin-bottom:6px">Nome do serviço</label>
+                      <input value="{{ fName }}" onChange="{{ onFName }}" placeholder="Instalação elétrica residencial" style="width:100%;min-height:46px;border:1px solid var(--color-neutral-300);border-radius:12px;padding:0 14px;font:inherit;font-size:15px;background:#fbfafa;box-sizing:border-box" />
+                    </div>
+                    <div>
+                      <label style="display:block;font-size:12px;color:var(--color-neutral-700);margin-bottom:6px">Categoria</label>
+                      <select value="{{ fCat }}" onChange="{{ onFCat }}" style="width:100%;min-height:46px;border:1px solid var(--color-neutral-300);border-radius:12px;padding:0 12px;font:inherit;font-size:15px;background:#fbfafa;color:var(--color-text);box-sizing:border-box">
+                        <option>Eletricista</option>
+                        <option>Encanador</option>
+                        <option>Vidraceiro</option>
+                        <option>Pintor</option>
+                        <option>Pedreiro</option>
+                        <option>Jardineiro</option>
+                        <option>Mecânico</option>
+                        <option>Chaveiro</option>
+                        <option>Técnico de informática</option>
+                        <option>Fotógrafo</option>
+                        <option>Diarista</option>
+                        <option>Ar-condicionado</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style="display:block;font-size:12px;color:var(--color-neutral-700);margin-bottom:6px">Descrição</label>
+                      <textarea value="{{ fDesc }}" onChange="{{ onFDesc }}" placeholder="Instalações e manutenção elétrica residencial." style="width:100%;min-height:92px;border:1px solid var(--color-neutral-300);border-radius:12px;padding:10px 14px;font:inherit;font-size:15px;background:#fbfafa;box-sizing:border-box;resize:vertical"></textarea>
+                    </div>
+                    <div>
+                      <label style="display:block;font-size:12px;color:var(--color-neutral-700);margin-bottom:8px">Forma de atendimento</label>
+                      <div style="display:flex;gap:8px;flex-wrap:wrap">
+                        <sc-for list="{{ modeOpts }}" as="m" hint-placeholder-count="3">
+                          <button onClick="{{ m.onClick }}" style="min-height:42px;border:1px solid {{ m.border }};border-radius:999px;padding:0 16px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;background:{{ m.bg }};color:{{ m.fg }}">{{ m.label }}</button>
+                        </sc-for>
+                      </div>
+                    </div>
+                    <div>
+                      <label style="display:block;font-size:12px;color:var(--color-neutral-700);margin-bottom:8px">Preço (opcional)</label>
+                      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+                        <sc-for list="{{ priceOpts }}" as="o" hint-placeholder-count="4">
+                          <button onClick="{{ o.onClick }}" style="min-height:42px;border:1px solid {{ o.border }};border-radius:999px;padding:0 16px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;background:{{ o.bg }};color:{{ o.fg }}">{{ o.label }}</button>
+                        </sc-for>
+                      </div>
+                      <sc-if value="{{ showPriceInput }}" hint-placeholder-val="{{ true }}">
+                        <input value="{{ fPrice }}" onChange="{{ onFPrice }}" type="number" placeholder="150" style="width:200px;min-height:46px;border:1px solid var(--color-neutral-300);border-radius:12px;padding:0 14px;font:inherit;font-size:15px;background:#fbfafa;box-sizing:border-box" />
+                      </sc-if>
+                    </div>
+                    <div>
+                      <label style="display:block;font-size:12px;color:var(--color-neutral-700);margin-bottom:8px">Fotos do serviço</label>
+                      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+                        <div style="height:120px;border-radius:14px;overflow:hidden;background:var(--color-neutral-200)"><image-slot id="sp-svc-1" shape="rounded" radius="14" placeholder="Adicionar foto"></image-slot></div>
+                        <div style="height:120px;border-radius:14px;overflow:hidden;background:var(--color-neutral-200)"><image-slot id="sp-svc-2" shape="rounded" radius="14" placeholder="Adicionar foto"></image-slot></div>
+                        <div style="height:120px;border-radius:14px;overflow:hidden;background:var(--color-neutral-200)"><image-slot id="sp-svc-3" shape="rounded" radius="14" placeholder="Adicionar foto"></image-slot></div>
+                      </div>
+                    </div>
+                    <button onClick="{{ onPublish }}" style="align-self:flex-start;min-height:50px;border:0;border-radius:14px;background:var(--color-accent);color:#fff;padding:0 24px;font-family:var(--font-heading);font-weight:800;font-size:15px;cursor:pointer" style-hover="background:var(--color-accent-600)">Publicar serviço</button>
+                  </div>
+                </div>
+              </sc-if>
+
+            </div>
+          </div>
+        </x-import>
+      </div>
+    </sc-if>
+
+  </div>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--color-text);color:#fff;padding:12px 18px;border-radius:999px;font-size:14px;font-weight:600;box-shadow:0 10px 30px rgba(32,30,29,0.3);z-index:999">{{ toast }}</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showPrices&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Conteúdo&quot;},&quot;showGallery&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Conteúdo&quot;},&quot;mobileOnly&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Apresentação&quot;}}">
+const PROVIDERS = [
+  { id: 'joao', name: 'João Elétrica', category: 'Eletricista', desc: 'Instalações, manutenção elétrica e reparos residenciais.', city: 'Santa Cruz do Sul - RS', mode: 'Atende em domicílio', price: 'A partir de R$ 120',
+    about: 'Serviços elétricos residenciais e comerciais. Instalações, manutenção, troca de tomadas, chuveiros e quadros elétricos.',
+    services: [
+      { name: 'Instalação elétrica', desc: 'Instalações e manutenção elétrica residencial.', mode: 'Em domicílio', price: 'A partir de R$ 150' },
+      { name: 'Troca de chuveiro', desc: 'Substituição de chuveiro e disjuntor, com teste de carga.', mode: 'Em domicílio', price: 'R$ 80' }
+    ] },
+  { id: 'hidro', name: 'Hidro Sul Encanamentos', category: 'Encanador', desc: 'Desentupimento, vazamentos e troca de tubulação.', city: 'Santa Cruz do Sul - RS', mode: 'Ambos', price: 'A partir de R$ 90',
+    address: 'Rua Marechal Floriano, 480 - Centro',
+    about: 'Atendimento em obras e emergências hidráulicas, com oficina no centro da cidade.',
+    services: [
+      { name: 'Desentupimento', desc: 'Pias, ralos e esgoto residencial.', mode: 'Em domicílio', price: 'A partir de R$ 90' },
+      { name: 'Conserto de vazamento', desc: 'Localização e reparo de vazamentos.', mode: 'Ambos', price: 'Sob consulta' }
+    ] },
+  { id: 'vidro', name: 'Vidraçaria Central', category: 'Vidraceiro', desc: 'Box, espelhos, janelas e vidros temperados.', city: 'Venâncio Aires - RS', mode: 'Possui estabelecimento', price: '',
+    address: 'Av. Osvaldo Aranha, 1220',
+    about: 'Vidros temperados sob medida, box, espelhos e janelas com instalação própria.',
+    services: [
+      { name: 'Box para banheiro', desc: 'Medição, corte e instalação.', mode: 'Em estabelecimento', price: 'Sob consulta' }
+    ] },
+  { id: 'pintura', name: 'Pintura Nova Casa', category: 'Pintor', desc: 'Pintura residencial interna e externa, texturas.', city: 'Santa Cruz do Sul - RS', mode: 'Atende em domicílio', price: 'R$ 25 por m²',
+    about: 'Pintura residencial e comercial, massa corrida, texturas e grafiato.',
+    services: [
+      { name: 'Pintura interna', desc: 'Paredes, forro e acabamento.', mode: 'Em domicílio', price: 'R$ 25 por m²' }
+    ] },
+  { id: 'clima', name: 'Clima Frio Ar-Condicionado', category: 'Ar-condicionado', desc: 'Instalação, higienização e recarga de gás.', city: 'Lajeado - RS', mode: 'Ambos', price: 'A partir de R$ 180',
+    address: 'Rua Bento Rosa, 92',
+    about: 'Instalação e manutenção de split residencial e comercial.',
+    services: [
+      { name: 'Instalação de split', desc: 'Até 12.000 BTUs, com suporte e tubulação.', mode: 'Em domicílio', price: 'A partir de R$ 180' }
+    ] },
+  { id: 'chave', name: 'Marcos Chaveiro 24h', category: 'Chaveiro', desc: 'Abertura de portas, cópias e troca de segredo.', city: 'Santa Cruz do Sul - RS', mode: 'Atende em domicílio', price: 'A partir de R$ 70',
+    about: 'Atendimento 24 horas em abertura de portas, cópias de chave e troca de segredo.',
+    services: [
+      { name: 'Abertura de porta', desc: 'Sem danos à fechadura.', mode: 'Em domicílio', price: 'A partir de R$ 70' }
+    ] },
+  { id: 'tecinfo', name: 'TecInfo Assistência', category: 'Informática', desc: 'Formatação, upgrade e remoção de vírus.', city: 'Santa Cruz do Sul - RS', mode: 'Possui estabelecimento', price: 'R$ 100',
+    address: 'Rua Ramiro Barcelos, 305 - Sala 4',
+    about: 'Assistência técnica para notebooks e desktops, com bancada própria.',
+    services: [
+      { name: 'Formatação completa', desc: 'Backup, instalação e drivers.', mode: 'Em estabelecimento', price: 'R$ 100' }
+    ] },
+  { id: 'jardim', name: 'Verde Vivo Jardinagem', category: 'Jardinagem', desc: 'Corte de grama, poda e manutenção de jardins.', city: 'Santa Cruz do Sul - RS', mode: 'Atende em domicílio', price: 'A partir de R$ 110',
+    about: 'Manutenção de jardins residenciais e condomínios: corte de grama, poda de árvores e limpeza de pátio.',
+    services: [
+      { name: 'Corte de grama', desc: 'Até 300 m², com recolhimento.', mode: 'Em domicílio', price: 'A partir de R$ 110' }
+    ] },
+  { id: 'vidroscs', name: 'Vidraçaria Bom Retiro', category: 'Vidraceiro', desc: 'Troca de vidros, box e espelhos sob medida.', city: 'Santa Cruz do Sul - RS', mode: 'Ambos', price: 'A partir de R$ 200',
+    address: 'Rua Borges de Medeiros, 745',
+    about: 'Vidros comuns e temperados, box, espelhos e reposição de janelas, com loja no bairro Bom Retiro.',
+    services: [
+      { name: 'Troca de vidro', desc: 'Janelas e portas residenciais.', mode: 'Ambos', price: 'A partir de R$ 200' }
+    ] },
+  { id: 'climascs', name: 'Ar Sul Climatização', category: 'Ar-condicionado', desc: 'Instalação e limpeza de split residencial.', city: 'Santa Cruz do Sul - RS', mode: 'Atende em domicílio', price: 'A partir de R$ 160',
+    about: 'Instalação, higienização e recarga de gás em aparelhos split e janela.',
+    services: [
+      { name: 'Higienização de split', desc: 'Limpeza completa com produto próprio.', mode: 'Em domicílio', price: 'R$ 160' }
+    ] },
+  { id: 'ana', name: 'Diarista Ana Lima', category: 'Limpeza', desc: 'Limpeza residencial e pós-obra.', city: 'Santa Cruz do Sul - RS', mode: 'Atende em domicílio', price: 'R$ 160 por diária',
+    about: 'Limpeza residencial, pós-obra e organização, com material incluso.',
+    services: [
+      { name: 'Diária de limpeza', desc: 'Até 8 horas, material incluso.', mode: 'Em domicílio', price: 'R$ 160' }
+    ] }
+];
+
+const CATEGORIES = ['Eletricista', 'Encanador', 'Pintor', 'Vidraceiro', 'Ar-condicionado', 'Jardinagem', 'Informática', 'Limpeza'];
+
+const PLURAL = {
+  'Eletricista': 'Eletricistas', 'Encanador': 'Encanadores', 'Pintor': 'Pintores',
+  'Vidraceiro': 'Vidraceiros', 'Ar-condicionado': 'Ar-condicionado', 'Jardinagem': 'Jardinagem',
+  'Informática': 'Informática', 'Limpeza': 'Limpeza'
+};
+
+class Component extends DCLogic {
+  state = {
+    pub: 'home', q: '', city: 'Santa Cruz do Sul - RS',
+    cat: 'Todas as categorias', mode: 'Todos', priceOnly: false,
+    selId: 'joao', admin: 'overview',
+    myServices: [
+      { id: 1, name: 'Instalação elétrica', category: 'Eletricista', mode: 'Em domicílio', price: 'A partir de R$ 150' },
+      { id: 2, name: 'Troca de chuveiro', category: 'Eletricista', mode: 'Em domicílio', price: 'R$ 80' },
+      { id: 3, name: 'Instalação de ventilador de teto', category: 'Eletricista', mode: 'Em domicílio', price: 'R$ 120' }
+    ],
+    fName: '', fCat: 'Eletricista', fDesc: '', fMode: 'Em domicílio', fPriceType: 'A partir de', fPrice: '',
+    toast: null
+  };
+
+  toast(msg) {
+    clearTimeout(this._t);
+    this.setState({ toast: msg });
+    this._t = setTimeout(() => this.setState({ toast: null }), 2400);
+  }
+
+  componentWillUnmount() { clearTimeout(this._t); }
+
+  // A single query field matches loosely across name, category, city and description:
+  // every word typed must appear somewhere in the provider's text ("eletricista joão").
+  matches(p) {
+    const s = this.state;
+    const q = s.q.trim().toLowerCase();
+    const hay = (p.name + ' ' + p.category + ' ' + p.desc + ' ' + p.city).toLowerCase();
+    const cityInQuery = q && this.cityWords().some(w => q.includes(w));
+
+    if (s.mode !== 'Todos' && p.mode !== s.mode && p.mode !== 'Ambos') return false;
+    if (s.priceOnly && !p.price) return false;
+    if (s.city !== 'Todas as cidades' && !cityInQuery && p.city !== s.city) return false;
+    if (q) return q.split(/\s+/).every(w => hay.includes(w));
+    if (s.cat !== 'Todas as categorias' && p.category !== s.cat) return false;
+    return true;
+  }
+
+  cityWords() {
+    return ['santa cruz do sul', 'venâncio aires', 'venancio aires', 'lajeado'];
+  }
+
+  vm(p) {
+    return {
+      slotId: 'sp-av-' + p.id,
+      name: p.name, category: p.category, desc: p.desc, city: p.city, mode: p.mode,
+      price: p.price, hasPrice: !!p.price && (this.props.showPrices ?? true),
+      onView: () => this.setState({ pub: 'profile', selId: p.id }),
+      onWhats: () => this.toast('Abrindo WhatsApp de ' + p.name)
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const showPrices = this.props.showPrices ?? true;
+    const sel = PROVIDERS.find(p => p.id === s.selId) || PROVIDERS[0];
+    const results = PROVIDERS.filter(p => this.matches(p));
+    const q = s.q.trim();
+    const title = q
+      ? '“' + q + '” em ' + (s.city === 'Todas as cidades' ? 'todas as cidades' : s.city.replace(' - RS', ''))
+      : (s.cat === 'Todas as categorias' ? 'Profissionais' : (PLURAL[s.cat] || s.cat)) + ' em ' + (s.city === 'Todas as cidades' ? 'todas as cidades' : s.city.replace(' - RS', ''));
+    const chip = (on) => ({
+      bg: on ? 'var(--color-accent)' : '#fff',
+      fg: on ? '#fff' : 'var(--color-text)',
+      border: on ? 'var(--color-accent)' : 'var(--color-neutral-300)'
+    });
+
+    return {
+      isHome: s.pub === 'home', isResults: s.pub === 'results', isProfile: s.pub === 'profile',
+      showAdmin: !(this.props.mobileOnly ?? false),
+      showGallery: this.props.showGallery ?? true,
+      q: s.q, city: s.city, cat: s.cat, mode: s.mode, toast: s.toast,
+      priceChipBg: s.priceOnly ? 'var(--color-accent)' : '#fff',
+      priceChipFg: s.priceOnly ? '#fff' : 'var(--color-text)',
+
+      goHome: () => this.setState({ pub: 'home' }),
+      onQueryKey: e => { if (e.key === 'Enter') this.setState({ pub: 'results' }); },
+      goResultsAll: () => this.setState({ pub: 'results', q: '', cat: 'Todas as categorias' }),
+      goProfileDefault: () => this.setState({ pub: 'profile', selId: s.selId }),
+      goBackResults: () => this.setState({ pub: 'results' }),
+
+      onQuery: e => this.setState({ q: e.target.value }),
+      onCity: e => this.setState({ city: e.target.value }),
+      onCat: e => this.setState({ cat: e.target.value, q: '' }),
+      onMode: e => this.setState({ mode: e.target.value }),
+      onPriceOnly: () => this.setState({ priceOnly: !s.priceOnly }),
+      onSearch: () => this.setState({ pub: 'results' }),
+
+      cats: CATEGORIES.map(name => {
+        const n = PROVIDERS.filter(p => p.category === name
+          && (s.city === 'Todas as cidades' || p.city === s.city)).length;
+        return {
+          name,
+          count: n === 1 ? '1 profissional' : n + ' profissionais',
+          onClick: () => this.setState({ pub: 'results', cat: name, q: '', mode: 'Todos', priceOnly: false })
+        };
+      }),
+      featured: PROVIDERS.slice(0, 2).map(p => this.vm(p)),
+      results: results.map(p => this.vm(p)),
+      noResults: results.length === 0,
+      resultsTitle: title,
+      resultsCount: results.length === 1 ? '1 profissional encontrado' : results.length + ' profissionais encontrados',
+
+      sel: {
+        slotId: 'sp-av-' + sel.id, name: sel.name, category: sel.category, city: sel.city,
+        mode: sel.mode, about: sel.about, hasAddress: !!sel.address, address: sel.address || ''
+      },
+      selServices: sel.services.map(x => ({ name: x.name, desc: x.desc, mode: x.mode, price: showPrices ? x.price : 'Sob consulta' })),
+      onWhatsSel: () => this.toast('Abrindo WhatsApp de ' + sel.name),
+      onCall: () => this.toast('Ligando para ' + sel.name),
+      onInsta: () => this.toast('Abrindo Instagram de ' + sel.name),
+
+      adminOverview: s.admin === 'overview', adminServices: s.admin === 'services', adminNew: s.admin === 'new',
+      navOverviewBg: s.admin === 'overview' ? 'var(--color-accent-100)' : 'transparent',
+      navOverviewFg: s.admin === 'overview' ? 'var(--color-accent-800)' : 'var(--color-neutral-700)',
+      navServicesBg: (s.admin === 'services' || s.admin === 'new') ? 'var(--color-accent-100)' : 'transparent',
+      navServicesFg: (s.admin === 'services' || s.admin === 'new') ? 'var(--color-accent-800)' : 'var(--color-neutral-700)',
+      goOverview: () => this.setState({ admin: 'overview' }),
+      goMyServices: () => this.setState({ admin: 'services' }),
+      goNewService: () => this.setState({ admin: 'new' }),
+      onSoon: () => this.toast('Tela fora do escopo desta entrega'),
+
+      serviceCountLabel: s.myServices.length === 1 ? '1 serviço cadastrado' : s.myServices.length + ' serviços cadastrados',
+      myServices: s.myServices.map(x => ({
+        name: x.name, category: x.category, mode: x.mode, price: showPrices ? x.price : 'Sob consulta',
+        onDelete: () => { this.setState(st => ({ myServices: st.myServices.filter(y => y.id !== x.id) })); this.toast('Serviço excluído'); }
+      })),
+      noServices: s.myServices.length === 0,
+
+      fName: s.fName, fCat: s.fCat, fDesc: s.fDesc, fPrice: s.fPrice,
+      onFName: e => this.setState({ fName: e.target.value }),
+      onFCat: e => this.setState({ fCat: e.target.value }),
+      onFDesc: e => this.setState({ fDesc: e.target.value }),
+      onFPrice: e => this.setState({ fPrice: e.target.value }),
+      modeOpts: ['Em meu estabelecimento', 'Em domicílio', 'Ambos'].map(label => Object.assign(
+        { label, onClick: () => this.setState({ fMode: label }) }, chip(s.fMode === label))),
+      priceOpts: ['Valor fixo', 'A partir de', 'Por hora', 'Sob consulta'].map(label => Object.assign(
+        { label, onClick: () => this.setState({ fPriceType: label }) }, chip(s.fPriceType === label))),
+      showPriceInput: s.fPriceType !== 'Sob consulta',
+      onPublish: () => {
+        const name = s.fName.trim() || 'Novo serviço';
+        let price = 'Sob consulta';
+        if (s.fPriceType !== 'Sob consulta' && s.fPrice) {
+          const v = 'R$ ' + s.fPrice;
+          price = s.fPriceType === 'A partir de' ? 'A partir de ' + v : s.fPriceType === 'Por hora' ? v + ' por hora' : v;
+        }
+        this.setState(st => ({
+          myServices: st.myServices.concat([{ id: Date.now(), name, category: s.fCat, mode: s.fMode, price }]),
+          admin: 'services', fName: '', fDesc: '', fPrice: ''
+        }));
+        this.toast('Serviço publicado');
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>
