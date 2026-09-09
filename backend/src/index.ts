@@ -1,15 +1,10 @@
 import { app } from './app';
-import { prisma } from './db';
 import { env } from './env';
 
-async function main() {
-  await prisma.$connect();
+if (!process.env.VERCEL) {
   app.listen(env.PORT, () => {
     console.log(`TemPro API em http://localhost:${env.PORT}`);
   });
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+export default app;
