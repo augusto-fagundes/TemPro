@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "https://tempro-backend.vercel.app/api/:path*"
-    }
-  ]
-}
