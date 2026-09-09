@@ -1,5 +1,5 @@
 {
-  "name": "tempro",
+  "name": "@tempro/backend",
   "version": "0.1.0",
   "private": true,
   "description": "TemPro — API do marketplace de prestadores de serviço locais",

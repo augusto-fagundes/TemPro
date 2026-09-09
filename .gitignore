@@ -6,3 +6,5 @@ dist-ssr
 .DS_Store
 .env
 backend/.env
+frontend/dist
+backend/dist

@@ -5,15 +5,24 @@ hospedado no Supabase.
 
 ## Subir
 
+Na raiz do monorepo:
+
 ```bash
-cd backend
 npm install
-npx prisma migrate deploy
-npm run db:seed       # opcional: recria os dados de exemplo
-npm run dev          # http://localhost:3333
+npm run db:migrate -w @tempro/backend
+npm run db:seed
+npm run dev:api        # http://localhost:3333
 ```
 
-O frontend (Vite na porta 5173) encaminha `/api` para esta API.
+Ou, dentro de `backend/`:
+
+```bash
+npx prisma migrate deploy
+npm run db:seed
+npm run dev
+```
+
+O frontend (`@tempro/frontend`, Vite na porta 5173) encaminha `/api` para esta API.
 
 ## Variáveis
 

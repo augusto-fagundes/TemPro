@@ -1,8 +1,7 @@
 /* ─────────────────────────────────────────────────────────────────────────
    Design tokens — Modernist
-   Ported verbatim from the Claude Design system bundled with the canvas
-   (design/_ds/modernist-…/styles.css). This file is the source of truth for
-   the product's look; retune it here and the whole app follows.
+   Source of truth for the product's look; retune it here and the whole app
+   follows.
    ───────────────────────────────────────────────────────────────────────── */
 
 :root {
