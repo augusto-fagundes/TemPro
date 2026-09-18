@@ -1,4 +1,4 @@
-import type { ModeFilter, SearchFilters } from '../types';
+import type { SearchFilters } from '../types';
 import { ALL_CITIES, DEFAULT_CITY } from '../types';
 
 /**
@@ -11,36 +11,29 @@ const KEYS = {
   q: 'q',
   city: 'cidade',
   categories: 'categoria',
-  mode: 'forma',
   priceOnly: 'preco',
 } as const;
-
-const MODES: ModeFilter[] = [
-  'Todos',
-  'Atende em domicílio',
-  'Possui estabelecimento',
-  'Ambos',
-];
 
 export const EMPTY_FILTERS: SearchFilters = {
   q: '',
   city: DEFAULT_CITY,
   categories: [],
-  mode: 'Todos',
   priceOnly: false,
 };
 
 export function filtersFromParams(params: URLSearchParams): SearchFilters {
-  const mode = params.get(KEYS.mode);
+  /* Links shared while the "every city" search existed would still open a
+     nationwide list nothing in the UI can produce any more; they land on the
+     default city instead. */
+  const city = params.get(KEYS.city);
   return {
     q: params.get(KEYS.q) ?? '',
-    city: params.get(KEYS.city) ?? DEFAULT_CITY,
+    city: !city || city === ALL_CITIES ? DEFAULT_CITY : city,
     // Several categories ride in one param: `?categoria=Eletricista,Pintor`.
     categories: (params.get(KEYS.categories) ?? '')
       .split(',')
       .map((name) => name.trim())
       .filter(Boolean),
-    mode: MODES.includes(mode as ModeFilter) ? (mode as ModeFilter) : 'Todos',
     priceOnly: params.get(KEYS.priceOnly) === '1',
   };
 }
@@ -52,7 +45,6 @@ export function paramsFromFilters(filters: SearchFilters): URLSearchParams {
   if (filters.categories.length) {
     params.set(KEYS.categories, filters.categories.join(','));
   }
-  if (filters.mode !== 'Todos') params.set(KEYS.mode, filters.mode);
   if (filters.priceOnly) params.set(KEYS.priceOnly, '1');
   return params;
 }

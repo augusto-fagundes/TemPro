@@ -40,6 +40,10 @@ async function uniqueProviderId(name: string): Promise<string> {
 
 export async function registerUser(input: {
   name: string;
+  firstName: string;
+  lastName: string;
+  /** Digits only — `registerSchema` has already stripped the formatting. */
+  mobile: string;
   email: string;
   password: string;
   city?: string;
@@ -76,6 +80,11 @@ export async function registerUser(input: {
         mode: 'Atende em domicílio',
         listingPrice: '',
         about: '',
+        /* The listing is only worth publishing if someone can be reached on
+           it, so the celular given at sign-up seeds the WhatsApp button. From
+           here on the profile screen owns it — editing it there does not
+           write back to `users.mobile`, which stays the account's contact. */
+        whatsapp: input.mobile,
         sortOrder: (last?.sortOrder ?? 0) + 1,
       },
     });
@@ -84,6 +93,9 @@ export async function registerUser(input: {
         email,
         passwordHash,
         name: input.name.trim(),
+        firstName: input.firstName.trim(),
+        lastName: input.lastName.trim(),
+        mobile: input.mobile,
         providerId,
       },
     });

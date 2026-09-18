@@ -3,6 +3,7 @@ import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../context/AuthProvider';
 import { useToast } from '../context/ToastProvider';
+import { markGuestOnboarded } from '../lib/guest';
 
 export function LoginPage() {
   const { login, token } = useAuth();
@@ -25,6 +26,7 @@ export function LoginPage() {
     setBusy(true);
     try {
       await login(email.trim(), password);
+      markGuestOnboarded();
       toast('Bem-vindo de volta');
       navigate(from, { replace: true });
     } catch (err) {
@@ -36,11 +38,16 @@ export function LoginPage() {
 
   return (
     <div className="sp-container sp-block">
-      <div className="sp-page sp-page--narrow">
-        <h1 className="sp-page__title">Entrar</h1>
-        <p className="sp-page__lede">
-          Acesse o painel para publicar seus serviços.
-        </p>
+      <div className="sp-page sp-auth">
+        <Link className="sp-page__back" to="/bem-vindo">
+          ← Voltar
+        </Link>
+        <div className="sp-auth__head">
+          <h1 className="sp-page__title">Entrar</h1>
+          <p className="sp-page__lede">
+            Acesse o painel para publicar seus serviços.
+          </p>
+        </div>
 
         <form
           className="sp-form"
@@ -80,7 +87,7 @@ export function LoginPage() {
           <p className="sp-field__hint">
             Demo: <code>joao@tempro.local</code> / <code>joao1234</code>
           </p>
-          <div className="sp-form__actions">
+          <div className="sp-form__actions sp-form__actions--stack">
             <button
               type="submit"
               className="sp-btn sp-btn--primary sp-btn--lg"
@@ -88,11 +95,12 @@ export function LoginPage() {
             >
               {busy ? 'Entrando…' : 'Entrar'}
             </button>
-            <Link className="sp-btn sp-btn--outline sp-btn--lg" to="/cadastrar">
-              Criar conta
-            </Link>
           </div>
         </form>
+
+        <p className="sp-auth__alt">
+          Ainda não tem conta? <Link to="/cadastrar">Criar conta</Link>
+        </p>
       </div>
     </div>
   );

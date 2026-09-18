@@ -14,14 +14,31 @@ export const searchQuerySchema = z.object({
         .map((name) => name.trim())
         .filter(Boolean),
     ),
-  mode: z.string().optional().default('Todos'),
   priceOnly: z
     .union([z.literal('1'), z.literal('true'), z.literal('false'), z.undefined()])
     .transform((value) => value === '1' || value === 'true'),
 });
 
+/* Celular as people type it — "(51) 99999-8888" — kept as digits only, the
+   same shape `providers.whatsapp` is stored in, so the wa.me hand-off on the
+   listing works straight off the number given at sign-up. A landline's 10
+   digits are rejected: what is asked for is a celular. */
+const mobileSchema = z
+  .string()
+  .trim()
+  .min(1, 'O celular é obrigatório')
+  .transform((value) => value.replace(/\D/g, ''))
+  .refine(
+    (digits) =>
+      digits.length === 11 || (digits.length === 13 && digits.startsWith('55')),
+    'Informe um celular com DDD — ex.: (51) 99999-8888',
+  );
+
 export const registerSchema = z.object({
   name: z.string().trim().min(1, 'O nome é obrigatório'),
+  firstName: z.string().trim().min(1, 'O primeiro nome é obrigatório'),
+  lastName: z.string().trim().min(1, 'O sobrenome é obrigatório'),
+  mobile: mobileSchema,
   email: z.string().trim().email('E-mail inválido'),
   password: z.string().min(6, 'A senha precisa ter ao menos 6 caracteres'),
   city: z.string().trim().optional(),

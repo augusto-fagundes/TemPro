@@ -1,20 +1,26 @@
 import { Link } from 'react-router-dom';
 
+import { useAuth } from '../../context/AuthProvider';
 import { useMeta } from '../../context/CatalogProvider';
 import { useProfile } from '../../context/ProfileProvider';
 import { useServices } from '../../context/ServicesProvider';
 import { countLabel } from '../../lib/search';
 import { providerPath } from '../../lib/urls';
 
-/** First word of the business name, for the greeting. */
-function firstName(name: string): string {
-  return name.split(/\s+/)[0] ?? name;
+/**
+ * The name the person gave when they signed up, not their business name.
+ * Accounts opened before that field existed carry an empty one, so those fall
+ * back to the first word of the business name rather than greeting nobody.
+ */
+function greetedName(firstName: string | undefined, businessName: string) {
+  return firstName?.trim() || businessName.split(/\s+/)[0] || businessName;
 }
 
 export function OverviewPage() {
   const { services } = useServices();
   const { profile } = useProfile();
   const { signedInProviderId } = useMeta();
+  const { user } = useAuth();
 
   const missing = [
     !profile.whatsapp && 'WhatsApp',
@@ -24,7 +30,12 @@ export function OverviewPage() {
 
   return (
     <div className="sp-page">
-      <h1 className="sp-page__title">Olá, {firstName(profile.name)} 👋</h1>
+      {/* The panel's landing screen is the one place a greeting belongs more
+          than a screen name does: "Meus serviços" and "Meu perfil" already
+          say where you are, and the rail marks this tab as the active one. */}
+      <h1 className="sp-page__title">
+        Olá, {greetedName(user?.firstName, profile.name)}
+      </h1>
       <p className="sp-page__lede">
         Gerencie seu perfil e os serviços que você oferece.
       </p>

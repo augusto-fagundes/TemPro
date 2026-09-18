@@ -8,20 +8,13 @@ import {
 } from 'react';
 
 import { api, getToken, setToken as persistToken } from '../lib/api';
-import type { AuthUser } from '../types';
+import type { AuthUser, RegisterInput } from '../types';
 
 interface AuthApi {
   token: string | null;
   user: AuthUser | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (input: {
-    name: string;
-    email: string;
-    password: string;
-    city?: string;
-    cities?: string[];
-    category?: string;
-  }) => Promise<void>;
+  register: (input: RegisterInput) => Promise<void>;
   logout: () => void;
   setUser: (user: AuthUser | null) => void;
 }
@@ -47,14 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const register = useCallback(
-    async (input: {
-      name: string;
-      email: string;
-      password: string;
-      city?: string;
-      cities?: string[];
-      category?: string;
-    }) => {
+    async (input: RegisterInput) => {
       const session = await api.register(input);
       applySession(session.token, session.user);
     },

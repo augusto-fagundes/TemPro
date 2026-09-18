@@ -11,6 +11,57 @@ function stripAccents(value: string): string {
   return value.normalize('NFD').replace(/\p{Diacritic}/gu, '');
 }
 
+/**
+ * Case- and accent-insensitive form, for matching against something a person
+ * typed. Cities need it most: the same place reaches us typed by hand on a
+ * profile, picked from the IBGE list and pasted into a link, and "Venancio
+ * Aires - rs" has to find the providers listed under "Venâncio Aires - RS".
+ */
+export function fold(value: string): string {
+  return stripAccents(value).trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+export function sameCity(a: string, b: string): boolean {
+  return fold(a) === fold(b);
+}
+
+/**
+ * Whether anyone at all serves the city — the question behind the empty state,
+ * and a different one from "does anyone match these filters".
+ */
+export function cityHasProviders(providers: Provider[], city: string): boolean {
+  if (city === ALL_CITIES) return providers.length > 0;
+  return providers.some((provider) =>
+    providerCities(provider).some((served) => sameCity(served, city)),
+  );
+}
+
+function ufOf(city: string): string {
+  return /- ([A-Z]{2})$/.exec(city)?.[1] ?? '';
+}
+
+/**
+ * Where to send someone whose city has nobody: the cities that do have
+ * providers, same state first. Same state is a rough stand-in for "close by" —
+ * the catalogue stores no coordinates — and it is honest enough to order a
+ * short list; it is not a distance, so the list stays capped rather than
+ * pretending to rank the whole country.
+ */
+export function otherListedCities(
+  listed: string[],
+  city: string,
+  limit = 8,
+): string[] {
+  const uf = ufOf(city);
+  return listed
+    .filter((option) => !sameCity(option, city))
+    .sort((a, b) => {
+      const byUf = Number(ufOf(b) === uf) - Number(ufOf(a) === uf);
+      return byUf !== 0 ? byUf : a.localeCompare(b, 'pt-BR');
+    })
+    .slice(0, limit);
+}
+
 function citySearchTerms(providers: Provider[]): string[] {
   const terms = new Set<string>();
   for (const provider of providers) {
@@ -57,21 +108,12 @@ export function matchesFilters(
     .join(' ')
     .toLowerCase();
 
-  // A provider marked "Ambos" satisfies either delivery mode.
-  if (
-    filters.mode !== 'Todos' &&
-    provider.mode !== filters.mode &&
-    provider.mode !== 'Ambos'
-  ) {
-    return false;
-  }
-
   if (filters.priceOnly && !provider.price) return false;
 
   if (
     filters.city !== ALL_CITIES &&
     !queryNamesCity(query, cityTerms) &&
-    !providerCities(provider).includes(filters.city)
+    !providerCities(provider).some((city) => sameCity(city, filters.city))
   ) {
     return false;
   }
@@ -102,8 +144,10 @@ export function searchProviders(
 }
 
 /** "Santa Cruz do Sul - RS" → "Santa Cruz do Sul"; the state is implied. */
-function shortCity(city: string): string {
-  return city === ALL_CITIES ? 'todas as cidades' : city.replace(' - RS', '');
+export function shortCity(city: string): string {
+  return city === ALL_CITIES
+    ? 'todas as cidades'
+    : city.replace(/ - [A-Z]{2}$/, '');
 }
 
 /**
@@ -117,6 +161,17 @@ function categoryHeadline(categories: string[]): string {
   if (names.length === 1) return names[0];
   if (names.length === 2) return `${names[0]} e ${names[1]}`;
   return `${names[0]}, ${names[1]} e mais ${names.length - 2}`;
+}
+
+/**
+ * Names the category selection on a filter control, where the space is one
+ * line: past two the tail is counted instead of listed.
+ */
+export function categorySummary(categories: string[]): string {
+  if (categories.length === 0) return 'Todas as categorias';
+  if (categories.length === 1) return categories[0];
+  if (categories.length === 2) return `${categories[0]} e ${categories[1]}`;
+  return `${categories[0]} +${categories.length - 1}`;
 }
 
 /** Headline over the results list, echoing back what was asked for. */
@@ -153,6 +208,7 @@ export function countInCategory(
   return providers.filter(
     (provider) =>
       provider.category === category &&
-      (city === ALL_CITIES || providerCities(provider).includes(city)),
+      (city === ALL_CITIES ||
+        providerCities(provider).some((served) => sameCity(served, city))),
   ).length;
 }

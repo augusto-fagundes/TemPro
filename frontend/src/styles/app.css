@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────────────────────────────────────
-   Serviços Perto — application styles.
+   TemPro — application styles.
    Built on the tokens in tokens.css; no raw brand colors here.
    Mobile-first: the base rules are the phone layout, and the media queries
    widen it. Most people reach a local-services site on a phone.
@@ -77,6 +77,25 @@ a:hover {
   padding-block: var(--space-8);
 }
 
+/* A block led by a label rather than a headline needs less air above it. */
+.sp-block--tight {
+  padding-block: var(--space-6);
+}
+
+/* Present to screen readers and to nothing else — for a <label> whose field
+   is already named on screen by its placeholder. */
+.sp-sronly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 .sp-block__head {
   display: flex;
   align-items: baseline;
@@ -124,12 +143,12 @@ a:hover {
 /* ── Brand + header ─────────────────────────────────────────────────────── */
 
 .sp-mark {
-  width: 12px;
-  height: 12px;
-  border-radius: 3px;
-  background: var(--color-accent);
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
   display: block;
   flex: none;
+  object-fit: cover;
 }
 
 .sp-brand {
@@ -158,6 +177,35 @@ a:hover {
   background: color-mix(in srgb, var(--sp-card) 88%, transparent);
   backdrop-filter: saturate(180%) blur(10px);
   border-bottom: 1px solid var(--color-neutral-200);
+}
+
+/* On the home the header sits on the hero's white, one surface: a rule there
+   would divide something that is not divided. */
+.sp-header--flush {
+  border-bottom-color: transparent;
+}
+
+/* Secondary to everything else up here — a way back to your own account, not
+   an invitation. Sized down to a text link, but padded back out to a 44px
+   target so it stays thumb-sized. */
+.sp-headerlink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: var(--space-2);
+  margin-right: calc(var(--space-2) * -1);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-neutral-600);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+
+.sp-headerlink:hover,
+.sp-headerlink:focus-visible {
+  color: var(--color-text);
 }
 
 .sp-header__inner {
@@ -189,9 +237,9 @@ a:hover {
   max-width: 100%;
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 6px;
   min-width: 0;
-  padding: 0 6px 0 12px;
+  padding: 0 4px 0 10px;
   border: 1px solid var(--color-neutral-300);
   border-radius: var(--sp-r-pill);
   background: var(--sp-card);
@@ -211,11 +259,11 @@ a:hover {
 .sp-headersearch__input {
   flex: 1;
   min-width: 0;
-  height: var(--sp-control-h-xs);
+  height: 32px;
   border: 0;
   background: transparent;
   font: inherit;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--color-text);
   caret-color: var(--color-accent);
 }
@@ -226,15 +274,15 @@ a:hover {
 
 .sp-headersearch__go {
   flex: none;
-  height: 30px;
-  padding: 0 14px;
+  height: 26px;
+  padding: 0 12px;
   border: 0;
   border-radius: var(--sp-r-pill);
   background: var(--color-accent);
   color: #fff;
   font-family: var(--font-heading);
   font-weight: var(--font-heading-weight);
-  font-size: 13px;
+  font-size: 12px;
   cursor: pointer;
 }
 
@@ -246,7 +294,7 @@ a:hover {
   .sp-headersearch {
     order: 0;
     flex: 1 1 auto;
-    max-width: 460px;
+    max-width: 380px;
     margin-inline: var(--space-4);
   }
 }
@@ -565,32 +613,30 @@ a:hover {
 }
 
 .sp-hero__inner {
-  padding-block: var(--space-8) 36px;
+  padding-block: var(--space-6) 24px;
 }
 
 .sp-hero__title {
-  font-size: 34px;
-  line-height: 1.03;
-  letter-spacing: -0.03em;
-  margin-bottom: 10px;
+  font-size: 30px;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  margin-bottom: 8px;
 }
 
-/* Each word rises out of its own clipped box, one after the other. The outer
-   span is the mask; the inner one is what moves. */
+/* Each line is its own block, so the break is the one the copy was written
+   for instead of whatever the container width happens to produce. */
+.sp-hero__line {
+  display: block;
+}
+
 .sp-hero__word {
   display: inline-block;
   overflow: hidden;
   vertical-align: bottom;
-  /* Widens the mask below the baseline so the descender of "quem" is not
-     sliced off, without changing the line's height. */
   padding-bottom: 0.14em;
   margin-bottom: -0.14em;
 }
 
-/* The hidden state lives on the hero while it has NOT entered yet; the class
-   is added a frame later and the words transition to their settled values.
-   Nothing is held hidden by a fill-mode, so a skipped transition still lands
-   on visible text. */
 .sp-hero__word-in {
   display: inline-block;
   transition:
@@ -605,31 +651,90 @@ a:hover {
 }
 
 .sp-hero__sub {
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: 14px;
+  line-height: 1.45;
   color: var(--color-neutral-700);
   max-width: 48ch;
   text-wrap: balance;
 }
 
+/* One field and, under it, the city it applies to. */
 .sp-searchbar {
   display: grid;
-  gap: 10px;
-  margin-top: var(--space-6);
+  justify-items: start;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  max-width: 560px;
 }
 
-.sp-hero__hint {
-  margin-top: 10px;
-  font-size: 12px;
+/* The shell carries the border, the focus ring and the height; the input
+   inside is bare, so the icon button can sit within the same outline rather
+   than beside it. */
+.sp-searchfield {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 56px;
+  padding-right: 6px;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--sp-r-lg);
+  background: var(--sp-card);
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.sp-searchfield:focus-within {
+  border-color: var(--sp-accent-strong);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 20%, transparent);
+}
+
+.sp-searchfield__input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding-left: var(--space-4);
+  border: 0;
+  background: transparent;
+  font: inherit;
+  /* 16px: anything smaller and iOS Safari zooms the page on focus. */
+  font-size: 16px;
+  color: var(--color-text);
+  caret-color: var(--color-accent);
+}
+
+.sp-searchfield__input::placeholder {
   color: var(--color-neutral-600);
-  line-height: 1.45;
 }
 
-/* The rest of the hero follows the last word in, so the headline reads as the
-   start of one entrance rather than the only animated thing on the page. */
+.sp-searchfield__input:focus-visible {
+  outline: none;
+}
+
+/* The one action on this screen: a filled square inside the field. */
+.sp-searchfield__go {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: var(--sp-r-md);
+  background: var(--sp-accent-strong);
+  color: #fff;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    opacity 0.15s;
+}
+
+.sp-searchfield__go:hover {
+  background: var(--color-accent-700);
+}
+
 .sp-hero__sub,
-.sp-hero .sp-searchbar,
-.sp-hero__hint {
+.sp-hero .sp-searchbar {
   transition:
     transform 0.6s ease-out,
     opacity 0.6s ease-out;
@@ -641,13 +746,9 @@ a:hover {
 .sp-hero .sp-searchbar {
   transition-delay: 390ms;
 }
-.sp-hero__hint {
-  transition-delay: 470ms;
-}
 
 .sp-hero:not(.sp-hero--entered) .sp-hero__sub,
-.sp-hero:not(.sp-hero--entered) .sp-searchbar,
-.sp-hero:not(.sp-hero--entered) .sp-hero__hint {
+.sp-hero:not(.sp-hero--entered) .sp-searchbar {
   transform: translateY(10px);
   opacity: 0;
 }
@@ -655,33 +756,84 @@ a:hover {
 @media (prefers-reduced-motion: reduce) {
   .sp-hero__word-in,
   .sp-hero__sub,
-  .sp-hero .sp-searchbar,
-  .sp-hero__hint {
+  .sp-hero .sp-searchbar {
     transition: none;
   }
 }
 
 @media (min-width: 760px) {
   .sp-hero__inner {
-    padding-block: 64px 56px;
+    padding-block: 40px 32px;
   }
   .sp-hero__title {
-    font-size: 52px;
+    font-size: 44px;
   }
   .sp-hero__sub {
-    font-size: 18px;
+    font-size: 15px;
   }
-  .sp-searchbar {
-    grid-template-columns: minmax(0, 1fr) 220px auto;
-    align-items: center;
-    max-width: 860px;
-  }
-  .sp-searchbar__go {
-    min-height: var(--sp-control-h);
+  .sp-searchfield {
+    height: 58px;
   }
 }
 
+/* ── City link ──────────────────────────────────────────────────────────── */
+
+/* Deliberately not a field. The search button is a filled square with a solid
+   glyph; this is an outline pin loose in a line of text. Two treatments that
+   cannot be confused for one another: one runs the search, the other adjusts
+   where it looks. */
+/* Compound selector on purpose: `.sp-menu__trigger` is defined further down
+   and caps its width at 280px, which clipped the city to "Santa Cruz do …".
+   `none`, not `100%`: a percentage max-width on this inline-flex child feeds
+   back into its own grid item's fit-content width and starves the label. The
+   grid area still bounds it, so a very long city name ellipses as before. */
+.sp-citylink.sp-menu__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  max-width: none;
+  padding-inline: var(--space-2);
+  margin-left: calc(var(--space-2) * -1);
+  border: 0;
+  border-radius: var(--sp-r-sm);
+  background: none;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.sp-citylink__pin {
+  flex: none;
+  color: var(--color-accent);
+}
+
+.sp-citylink .sp-menu__chevron {
+  flex: none;
+  color: var(--color-neutral-500);
+}
+
+.sp-citylink:hover .sp-menu__summary,
+.sp-citylink--open .sp-menu__summary {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* ── Category grid ──────────────────────────────────────────────────────── */
+
+/* Small caps label, not a headline: the search field is the offer above it. */
+.sp-eyebrow {
+  margin-bottom: var(--space-3);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
 
 .sp-catgrid {
   display: grid;
@@ -689,11 +841,30 @@ a:hover {
   gap: 10px;
 }
 
+/* Three across, so six categories land as two full rows. */
 @media (min-width: 640px) {
   .sp-catgrid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: var(--space-3);
   }
+}
+
+/* Its own row under the tiles, whatever the column count. */
+.sp-catgrid__more {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-accent-700);
+  text-decoration: none;
+}
+
+.sp-catgrid__more:hover {
+  color: var(--color-accent-700);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .sp-cat {
@@ -701,8 +872,9 @@ a:hover {
   color: inherit;
   background: var(--sp-card);
   border: 1px solid var(--color-neutral-200);
-  border-radius: var(--sp-r-xl);
-  padding: var(--space-4);
+  border-radius: var(--sp-r-lg);
+  padding: var(--space-3);
+  min-height: 44px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -729,10 +901,10 @@ a:hover {
 .sp-cat__icon {
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
-  margin-bottom: 10px;
-  border-radius: var(--sp-r-md);
+  width: 36px;
+  height: 36px;
+  margin-bottom: 8px;
+  border-radius: var(--sp-r-sm);
   background: var(--color-accent-100);
   color: var(--color-accent-700);
   transition: background-color 0.15s;
@@ -749,13 +921,8 @@ a:hover {
 .sp-cat__name {
   font-family: var(--font-heading);
   font-weight: var(--font-heading-weight);
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.2;
-}
-
-.sp-cat__count {
-  font-size: 12px;
-  color: var(--color-neutral-600);
 }
 
 /* ── Avatar ─────────────────────────────────────────────────────────────── */
@@ -985,6 +1152,9 @@ a:hover {
 
 .sp-menu__summary {
   overflow: hidden;
+  /* Without this the ellipsis never fires: the text wraps instead and the
+     control grows a second line, shoving the row it sits in. */
+  white-space: nowrap;
   text-overflow: ellipsis;
 }
 
@@ -1092,6 +1262,76 @@ a:hover {
   color: var(--color-neutral-700);
 }
 
+.sp-menu__item--cursor {
+  background: var(--color-accent-100);
+}
+
+/* ── City search ────────────────────────────────────────────────────────── */
+
+.sp-citysearch--bar {
+  width: 100%;
+}
+
+.sp-menu__pop {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 8px);
+  left: 0;
+  width: max(100%, 280px);
+  max-width: min(360px, calc(100vw - 32px));
+  padding: 8px;
+  background: var(--sp-card);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--sp-r-xl);
+  box-shadow: var(--sp-shadow-raised);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sp-menu__pop {
+    animation: sp-menu-in 0.16s ease-out;
+  }
+}
+
+.sp-menu__search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--sp-r-md);
+  color: var(--color-neutral-600);
+}
+
+.sp-menu__search:focus-within {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 20%, transparent);
+}
+
+.sp-menu__input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  color: var(--color-text);
+  outline: none;
+  caret-color: var(--color-accent);
+}
+
+.sp-menu__input::placeholder {
+  color: var(--color-neutral-600);
+}
+
+.sp-menu__scroll {
+  max-height: 260px;
+  overflow: auto;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
 .sp-citypicker__field {
   cursor: text;
 }
@@ -1178,6 +1418,21 @@ a:hover {
   font-size: 14px;
   color: var(--color-neutral-700);
   max-width: 46ch;
+}
+
+.sp-empty__label {
+  margin: var(--space-3) 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+
+.sp-empty__cities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .sp-empty__actions {
@@ -1381,6 +1636,64 @@ a:hover {
 
 /* ── Home CTA band ──────────────────────────────────────────────────────── */
 
+.sp-cta-carousel {
+  width: 100%;
+}
+
+.sp-cta-carousel__frame {
+  display: grid;
+  overflow: hidden;
+  touch-action: pan-y;
+  cursor: grab;
+  border-radius: var(--sp-r-2xl);
+}
+
+.sp-cta-carousel__track {
+  grid-area: 1 / 1;
+  display: flex;
+  width: 100%;
+  transition: transform 0.32s ease;
+}
+
+.sp-cta-carousel__slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  display: flex;
+}
+
+.sp-cta-carousel__slide .sp-cta {
+  flex: 1;
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sp-cta-carousel__track {
+    transition: none;
+  }
+}
+
+.sp-cta-carousel__dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: var(--space-4);
+}
+
+.sp-cta-carousel__dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-neutral-300);
+  cursor: pointer;
+}
+
+.sp-cta-carousel__dot--on {
+  width: 22px;
+  background: var(--color-accent);
+}
+
 .sp-cta {
   background: var(--color-neutral-900);
   color: var(--color-neutral-100);
@@ -1391,6 +1704,17 @@ a:hover {
   justify-content: space-between;
   gap: var(--space-6);
   flex-wrap: wrap;
+}
+
+.sp-cta--invite {
+  background: var(--sp-card);
+  color: var(--color-text);
+  border: 1px solid var(--color-neutral-200);
+  box-shadow: var(--sp-shadow-card);
+}
+
+.sp-cta--invite .sp-cta__text {
+  color: var(--color-neutral-700);
 }
 
 .sp-cta__body {
@@ -1408,7 +1732,124 @@ a:hover {
   max-width: 48ch;
 }
 
+/* The page's one piece of social proof. As another white card it read as a
+   dashboard stat among the category tiles; on a tinted accent surface it sits
+   a tier above them without competing with the near-black CTA band below. */
+.sp-countcard {
+  /* Stacked until there is room for two real columns. Left to `flex-wrap`,
+     the middle widths kept both on one line and squeezed the supporting line
+     into a sliver beside the headline; the switch is a breakpoint so the two
+     states are the only two that can happen. */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: var(--color-accent-100);
+  border: 1px solid var(--color-accent-200);
+  border-radius: var(--sp-r-2xl);
+  padding: var(--space-6);
+  box-shadow: var(--sp-shadow-card);
+}
+
+/* Three spans of one sentence. The grid lifts the numeral into its own column
+   and lets the words stack beside it, so the figure carries the weight while
+   the line still reads as something a person would say. */
+.sp-countcard__title {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: var(--space-4);
+  align-items: center;
+  margin: 0;
+}
+
+.sp-countcard__lead {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: end;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0;
+  color: var(--color-accent-700);
+}
+
+.sp-countcard__num {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  align-self: center;
+  justify-self: center;
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 56px;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--color-accent);
+  /* Same-width digits, on a box already sized for the final figure, so the
+     count-up changes the number without moving the sentence. */
+  font-variant-numeric: tabular-nums;
+  min-width: var(--sp-count-ch, 2ch);
+  text-align: center;
+}
+
+.sp-countcard__unit {
+  grid-column: 2;
+  grid-row: 2;
+  align-self: start;
+  font-size: 19px;
+  line-height: 1.15;
+}
+
+/* Nothing to count: the sentence is the whole heading, so it drops the grid. */
+.sp-countcard__title--empty {
+  display: block;
+  font-size: 20px;
+}
+
+.sp-countcard__text {
+  /* No top margin: the card's flex gap already separates it. */
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--color-neutral-700);
+  max-width: 52ch;
+}
+
+@media (min-width: 640px) {
+  .sp-countcard {
+    padding: 28px 32px;
+  }
+  .sp-countcard__num {
+    font-size: 76px;
+  }
+  .sp-countcard__lead {
+    font-size: 17px;
+  }
+  .sp-countcard__unit {
+    font-size: 25px;
+  }
+  .sp-countcard__title--empty {
+    font-size: 26px;
+  }
+  .sp-countcard__text {
+    font-size: 15px;
+  }
+}
+
 @media (min-width: 860px) {
+  /* Wide enough for the headline and the supporting line to sit side by side,
+     which is the rhythm the CTA bands already set at this width. */
+  .sp-countcard {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-8);
+  }
+  .sp-countcard__title {
+    flex: 0 1 auto;
+  }
+  .sp-countcard__text {
+    flex: 0 1 34ch;
+  }
+
   .sp-cta {
     padding: var(--space-8);
   }
@@ -1440,22 +1881,89 @@ a:hover {
   margin-right: auto;
 }
 
+/* The rail's own greeting. On a phone the menu trigger says this instead. */
+/* ── Panel menu (phone navigation) ──────────────────────────────────────── */
+
+.sp-panelmenu {
+  margin-left: auto;
+}
+
+/* Square rather than a pill: with the greeting gone from the trigger there is
+   only the icon left, and a pill around it would read as a cut-off label. */
+.sp-panelmenu__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--sp-r-lg);
+  background: var(--sp-card);
+  color: var(--color-text);
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background-color 0.15s;
+}
+
+.sp-panelmenu__trigger:hover {
+  border-color: var(--color-neutral-500);
+}
+
+.sp-panelmenu__trigger--open {
+  border-color: var(--color-accent);
+  background: var(--color-accent-100);
+}
+
+.sp-panelmenu__pop {
+  left: auto;
+  right: 0;
+  width: max(220px, 100%);
+}
+
+/* Roomier than the filter menus these classes came from: this is the only
+   way between screens on a phone, so every row is a thumb target. */
+.sp-panelmenu__item {
+  min-height: 44px;
+  font-size: 15px;
+  text-decoration: none;
+}
+
+.sp-panelmenu__rule {
+  height: 1px;
+  margin: 6px 4px;
+  background: var(--color-neutral-200);
+}
+
+.sp-panelmenu__exit {
+  color: var(--color-accent-700);
+}
+
+/* Wraps to a second line on a phone rather than scrolling sideways. The
+   scroller fitted 444px of tabs into 343px, so "Ver perfil público" was cut
+   mid-word behind a scrollbar most people never think to drag. */
+/* Hidden on a phone: the menu beside the greeting navigates instead, which
+   is what kept this strip from wrapping to a second row at 390px. */
 .sp-sidebar__nav {
-  display: flex;
+  display: none;
+  flex-wrap: wrap;
   gap: var(--space-1);
-  overflow-x: auto;
   order: 3;
   width: 100%;
 }
 
 .sp-sidebar__link {
-  display: block;
+  display: flex;
+  align-items: center;
+  /* Thumb-sized: the tabs are the panel's only navigation on a phone. */
+  min-height: 44px;
   text-align: left;
   text-decoration: none;
   white-space: nowrap;
   border: 0;
   border-radius: 10px;
-  padding: 10px 12px;
+  padding: 0 12px;
   font: inherit;
   font-size: 14px;
   font-weight: 600;
@@ -1478,8 +1986,10 @@ a:hover {
   color: var(--color-accent-800);
 }
 
+/* Both fold into the menu on a phone — the greeting already says whose
+   account this is, and "Sair" is the menu's last row. */
 .sp-sidebar__account {
-  display: flex;
+  display: none;
   align-items: center;
   gap: 10px;
   min-width: 0;
@@ -1497,12 +2007,19 @@ a:hover {
   text-overflow: ellipsis;
 }
 
+/* Hidden on the bar, where it crowded "Sair" against the edge; the city is
+   on the profile screen anyway. The rail at ≥900px has room and shows it. */
 .sp-sidebar__city {
+  display: none;
   font-size: 12px;
   color: var(--color-neutral-600);
 }
 
 .sp-sidebar__exit {
+  display: none;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: var(--space-2);
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
@@ -1535,7 +2052,25 @@ a:hover {
 
   .sp-sidebar__top {
     margin: 0 0 18px;
+    /* Keeps the brand on the nav links' text edge. */
     padding-inline: var(--space-2);
+  }
+
+  /* The rail shows every destination at once; a menu would hide them. */
+  .sp-panelmenu {
+    display: none;
+  }
+
+  .sp-sidebar__nav {
+    display: flex;
+  }
+
+  .sp-sidebar__account {
+    display: flex;
+  }
+
+  .sp-sidebar__exit {
+    display: inline-flex;
   }
 
   .sp-sidebar__nav {
@@ -1551,6 +2086,10 @@ a:hover {
     border-top: 1px solid var(--color-neutral-200);
   }
 
+  .sp-sidebar__city {
+    display: block;
+  }
+
   .sp-sidebar__exit {
     padding: 0 var(--space-2) var(--space-1);
   }
@@ -1563,12 +2102,43 @@ a:hover {
 
 .sp-page {
   max-width: 760px;
+  /* The width caps below only ever narrowed the block; without this it stayed
+     pinned to the left edge of a container up to 1200px wide. */
+  margin-inline: auto;
 }
 .sp-page--wide {
   max-width: 880px;
 }
 .sp-page--narrow {
   max-width: 680px;
+}
+
+/* Entrar / criar conta: one column no wider than the card it holds, with the
+   heading centred over it instead of running the full page width. */
+.sp-auth {
+  max-width: 520px;
+}
+
+.sp-auth__head {
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+/* The form is the content on these screens and the heading only names it, so
+   it runs smaller than a headline that has to carry a section by itself. */
+.sp-auth__head .sp-page__title {
+  font-size: 22px;
+}
+
+.sp-auth__head .sp-page__lede {
+  margin-bottom: 0;
+}
+
+.sp-auth__alt {
+  margin-top: var(--space-4);
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-neutral-700);
 }
 
 .sp-page__title {
@@ -1591,16 +2161,30 @@ a:hover {
   margin-bottom: var(--space-3);
 }
 
+/* Here the link is chrome, not content: it sits up against the header instead
+   of inside the block's headline air, at label size rather than body size. */
+.sp-auth .sp-page__back {
+  /* Block, not inline-block: an inline box is placed off the line's baseline,
+     so the negative margin that pulls it up would be ignored. */
+  display: block;
+  width: fit-content;
+  font-size: 13px;
+  margin-top: calc(var(--space-4) * -1);
+  margin-bottom: var(--space-4);
+}
+
 .sp-page__cta {
   margin-top: var(--space-6);
 }
 
+/* Title over action on a phone. Side by side these just fitted — "Meus
+   serviços" and "+ Novo serviço" came to 356px of a 358px row — so the pair
+   never wrapped and read as crushed together instead. */
 .sp-page__head {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
   margin-bottom: var(--space-6);
 }
 
@@ -1611,6 +2195,18 @@ a:hover {
 @media (min-width: 640px) {
   .sp-page__title {
     font-size: 32px;
+  }
+
+  .sp-auth__head .sp-page__title {
+    font-size: 26px;
+  }
+
+  .sp-page__head {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
   }
 }
 
@@ -1671,10 +2267,27 @@ a:hover {
   font-size: 16px;
 }
 
+/* Full width on a phone, so the two buttons are thumb-sized and the price
+   is not left stranded on its own beside them. */
 .sp-svcrow__actions {
   display: flex;
   gap: var(--space-2);
-  margin-left: auto;
+  width: 100%;
+}
+
+.sp-svcrow__actions .sp-btn {
+  flex: 1;
+}
+
+@media (min-width: 640px) {
+  .sp-svcrow__actions {
+    width: auto;
+    margin-left: auto;
+  }
+
+  .sp-svcrow__actions .sp-btn {
+    flex: none;
+  }
 }
 
 .sp-form {
@@ -1687,10 +2300,40 @@ a:hover {
   gap: 18px;
 }
 
+/* Field groups inside a form card. A fieldset needs its browser chrome reset
+   before it can be a plain flex column. */
+.sp-form__group {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.sp-form__group + .sp-form__group {
+  margin-top: var(--space-2);
+}
+
+.sp-form__legend {
+  padding: 0;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+
 .sp-form__actions {
   display: flex;
   gap: var(--space-2);
   flex-wrap: wrap;
+}
+
+.sp-form__actions--stack .sp-btn {
+  width: 100%;
 }
 
 .sp-chiprow {
@@ -1708,17 +2351,6 @@ a:hover {
   .sp-fieldrow {
     grid-template-columns: 1fr 1fr;
   }
-}
-
-.sp-logofield {
-  display: flex;
-  gap: var(--space-4);
-  align-items: flex-start;
-}
-
-.sp-logofield__body {
-  flex: 1;
-  min-width: 0;
 }
 
 .sp-svcrow__desc {
@@ -1905,5 +2537,229 @@ a:hover {
   to {
     opacity: 1;
     transform: translate(-50%, 0);
+  }
+}
+
+.sp-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sp-gate {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--sp-screen);
+}
+
+.sp-gate__top {
+  padding: 20px var(--space-4) 0;
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.sp-gate__main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4) var(--space-8);
+}
+
+.sp-welcome {
+  width: 100%;
+  max-width: 680px;
+}
+
+.sp-welcome__title {
+  font-size: 32px;
+  margin-bottom: var(--space-3);
+}
+
+.sp-welcome__lede {
+  font-size: 16px;
+  color: var(--color-neutral-700);
+  margin-bottom: 28px;
+  max-width: 42ch;
+}
+
+.sp-choice-grid {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.sp-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 22px 20px;
+  background: var(--sp-card);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--sp-r-2xl);
+  text-decoration: none;
+  color: var(--color-text);
+  box-shadow: var(--sp-shadow-card);
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    transform 0.15s;
+}
+
+.sp-choice:hover {
+  color: var(--color-text);
+  border-color: var(--color-text);
+  box-shadow: var(--sp-shadow-hover);
+}
+
+.sp-choice__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--sp-r-lg);
+  background: var(--color-accent-100);
+  color: var(--color-accent-700);
+  display: grid;
+  place-items: center;
+}
+
+.sp-choice__name {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 20px;
+  letter-spacing: -0.02em;
+}
+
+.sp-choice__text {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--color-neutral-700);
+}
+
+.sp-welcome__alt {
+  margin-top: 22px;
+  font-size: 14px;
+  color: var(--color-neutral-700);
+}
+
+.sp-onboard {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.sp-onboard__frame {
+  overflow: hidden;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.sp-onboard__track {
+  display: flex;
+  transition: transform 0.32s ease;
+}
+
+.sp-onboard__slide {
+  flex: 0 0 100%;
+  padding: 8px 4px 20px;
+  text-align: center;
+}
+
+.sp-onboard__art {
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 22px;
+  border-radius: 28px;
+  background: var(--color-accent-100);
+  color: var(--color-accent-700);
+  display: grid;
+  place-items: center;
+}
+
+.sp-onboard__title {
+  font-size: 28px;
+  margin-bottom: var(--space-3);
+}
+
+.sp-onboard__text {
+  font-size: 16px;
+  color: var(--color-neutral-700);
+  max-width: 36ch;
+  margin: 0 auto;
+}
+
+.sp-onboard__dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 8px 0 22px;
+}
+
+.sp-onboard__dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-neutral-300);
+  cursor: pointer;
+}
+
+.sp-onboard__dot--on {
+  width: 22px;
+  background: var(--color-accent);
+}
+
+.sp-onboard__nav {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.sp-onboard__nav .sp-btn {
+  flex: 1;
+}
+
+.sp-onboard__skip {
+  margin-top: 16px;
+  border: 0;
+  background: transparent;
+  color: var(--color-neutral-600);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: center;
+}
+
+.sp-onboard__skip:hover {
+  color: var(--color-text);
+}
+
+@media (min-width: 640px) {
+  .sp-welcome__title {
+    font-size: 40px;
+  }
+
+  .sp-choice-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .sp-onboard__title {
+    font-size: 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sp-onboard__track,
+  .sp-choice {
+    transition: none;
   }
 }

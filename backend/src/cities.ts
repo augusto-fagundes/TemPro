@@ -112,12 +112,26 @@ export async function searchCities(
   if (needle.length < 2) return [];
 
   const rows = await loadCities();
-  const matched: CityMatch[] = [];
+  /* Ranked, not just filtered: the list is alphabetical, so cutting at the
+     first `limit` substring matches buries the city someone is typing under
+     the ones that merely contain it — "lajea" would answer "Dois Lajeados"
+     before "Lajeado". What the name starts with wins. */
+  const matched: { row: CityMatch; rank: number }[] = [];
   for (const row of rows) {
-    if (normalizeCityQuery(row.label).includes(needle)) {
-      matched.push(row);
-      if (matched.length >= limit) break;
+    const name = normalizeCityQuery(row.name);
+    if (name === needle) matched.push({ row, rank: 0 });
+    else if (name.startsWith(needle)) matched.push({ row, rank: 1 });
+    else if (normalizeCityQuery(row.label).includes(needle)) {
+      matched.push({ row, rank: 2 });
     }
   }
-  return matched;
+
+  return matched
+    .sort((a, b) =>
+      a.rank !== b.rank
+        ? a.rank - b.rank
+        : a.row.label.localeCompare(b.row.label, 'pt-BR'),
+    )
+    .slice(0, limit)
+    .map((entry) => entry.row);
 }

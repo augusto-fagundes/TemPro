@@ -8,7 +8,8 @@
     "backend"
   ],
   "scripts": {
-    "dev": "npm run dev -w @tempro/frontend",
+    "dev": "concurrently -n api,web -c magenta,cyan -k \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:web": "npm run dev -w @tempro/frontend",
     "dev:api": "npm run dev -w @tempro/backend",
     "build": "npm run build -w @tempro/frontend",
     "build:api": "npm run build -w @tempro/backend",
@@ -18,5 +19,8 @@
     "db:migrate": "npm run db:migrate -w @tempro/backend",
     "db:seed": "npm run db:seed -w @tempro/backend",
     "db:generate": "npm run db:generate -w @tempro/backend"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5"
   }
 }

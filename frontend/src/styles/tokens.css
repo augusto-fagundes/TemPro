@@ -65,6 +65,12 @@
   --sp-input-bg: #fbfafa;
   --sp-chip-bg: #f2f0ef;
 
+  /* The accent is a display red: white on it lands at 4.2:1, under the 4.5:1
+     a control with a white label or icon needs. This is the same hue taken
+     one step down the ramp, where white reaches 4.74:1 — for filled buttons
+     and anything else that carries white on top of the brand colour. */
+  --sp-accent-strong: var(--color-accent-600);
+
   --sp-shadow-card: 0 4px 16px rgba(32, 30, 29, 0.07);
   --sp-shadow-raised: 0 6px 20px rgba(32, 30, 29, 0.08);
   --sp-shadow-hover: 0 4px 14px rgba(32, 30, 29, 0.08);

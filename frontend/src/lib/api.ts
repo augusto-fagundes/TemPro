@@ -4,6 +4,7 @@ import type {
   OwnedService,
   Provider,
   ProviderProfile,
+  RegisterInput,
 } from '../types';
 
 export interface CityMatch {
@@ -67,7 +68,15 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     headers.set('Authorization', `Bearer ${token}`);
   }
 
-  const response = await fetch(`/api${path}`, { ...init, headers });
+  /* A dead API is a TypeError from fetch, not an HTTP status, and its
+     message ("Failed to fetch") reaches the screen as-is. Naming the cause
+     here keeps every caller — the city search included — from having to. */
+  let response: Response;
+  try {
+    response = await fetch(`/api${path}`, { ...init, headers });
+  } catch {
+    throw new Error('Sem conexão com o servidor do TemPro');
+  }
   if (response.status === 204) return undefined as T;
 
   const payload: unknown = await response.json().catch(() => null);
@@ -92,14 +101,7 @@ export const api = {
       `/cities?q=${encodeURIComponent(q)}&limit=${limit}`,
     ).then((body) => body.cities),
 
-  register: (body: {
-    name: string;
-    email: string;
-    password: string;
-    city?: string;
-    cities?: string[];
-    category?: string;
-  }) =>
+  register: (body: RegisterInput) =>
     request<AuthSession>('/auth/register', {
       method: 'POST',
       body: JSON.stringify(body),

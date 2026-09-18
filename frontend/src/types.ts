@@ -97,8 +97,26 @@ export interface OwnedProduct {
 export interface AuthUser {
   id: number;
   email: string;
+  /** The business name — what the public listing is called. */
   name: string;
+  firstName: string;
+  lastName: string;
+  /** Digits only. The account's contact, not the listing's. */
+  mobile: string;
   providerId: string;
+}
+
+/** Everything `POST /auth/register` needs to open an account. */
+export interface RegisterInput {
+  name: string;
+  firstName: string;
+  lastName: string;
+  mobile: string;
+  email: string;
+  password: string;
+  city?: string;
+  cities?: string[];
+  category?: string;
 }
 
 /** Everything the provider can change about their public listing. */
@@ -117,15 +135,12 @@ export interface ProviderProfile {
   photoUrl: string;
 }
 
-export type ModeFilter = 'Todos' | ProviderMode;
-
 export interface SearchFilters {
   /** Free text matched loosely across name, category, description and city. */
   q: string;
   city: string;
   /** Selected categories. Empty means every category. */
   categories: string[];
-  mode: ModeFilter;
   priceOnly: boolean;
 }
 

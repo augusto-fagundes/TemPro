@@ -1,4 +1,4 @@
-# Serviços Perto (TemPro)
+# TemPro
 
 Marketplace de prestadores de serviço locais — MVP navegável.
 
@@ -16,18 +16,23 @@ Na raiz do monorepo:
 ```bash
 npm install
 
-# 1. API — cria tabelas e carrega o seed
+# Só na primeira vez: cria tabelas e carrega o seed
 npm run db:migrate -w @tempro/backend
 npm run db:seed
-npm run dev:api        # http://localhost:3333
 
-# 2. Frontend (outra aba)
-npm run dev            # http://localhost:5173  (proxy /api → :3333)
+npm run dev            # API em :3333 + frontend em :5173
 ```
+
+`npm run dev` sobe os dois juntos, e é o que você quer no dia a dia: o
+frontend serve `/api` por proxy para a API, então o app não carrega com só
+metade no ar — a busca de cidade, o catálogo e o login falham todos por falta
+de servidor, não por bug.
 
 Outros scripts da raiz:
 
 ```bash
+npm run dev:api        # só a API
+npm run dev:web        # só o frontend
 npm run build          # frontend → frontend/dist/
 npm run build:api      # backend → backend/dist/
 npm run preview        # serve o build do frontend

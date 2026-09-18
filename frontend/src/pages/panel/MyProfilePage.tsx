@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { Avatar } from '../../components/Avatar';
 import { CategoryField, OTHER_CATEGORY } from '../../components/CategoryField';
 import { CityPicker } from '../../components/CityPicker';
 import { useMeta } from '../../context/CatalogProvider';
@@ -94,24 +93,21 @@ export function MyProfilePage() {
           submit();
         }}
       >
-        <div className="sp-logofield">
-          <Avatar name={draft.name || '?'} src={draft.photoUrl} size={72} radius={18} />
-          <div className="sp-logofield__body">
-            <label className="sp-field__label" htmlFor="pf-logo">
-              Logo
-            </label>
-            <input
-              id="pf-logo"
-              className="sp-input"
-              value={draft.photoUrl}
-              onChange={(e) => set('photoUrl', e.target.value)}
-              placeholder="https://…"
-            />
-            <p className="sp-field__hint">
-              Cole o link de uma imagem. Sem logo, seu perfil usa as iniciais do
-              nome.
-            </p>
-          </div>
+        <div className="sp-field">
+          <label className="sp-field__label" htmlFor="pf-logo">
+            Logo
+          </label>
+          <input
+            id="pf-logo"
+            className="sp-input"
+            value={draft.photoUrl}
+            onChange={(e) => set('photoUrl', e.target.value)}
+            placeholder="https://…"
+          />
+          <p className="sp-field__hint">
+            Cole o link de uma imagem. Sem logo, seu perfil usa as iniciais do
+            nome.
+          </p>
         </div>
 
         <div className="sp-field">

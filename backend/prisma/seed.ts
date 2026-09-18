@@ -100,6 +100,9 @@ async function main() {
       email: 'joao@tempro.local',
       passwordHash: await bcrypt.hash('joao1234', 10),
       name: 'João Elétrica',
+      firstName: 'João',
+      lastName: 'Silva',
+      mobile: '51999998888',
       providerId: 'joao',
     },
   });

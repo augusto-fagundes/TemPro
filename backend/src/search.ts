@@ -5,12 +5,20 @@ export interface SearchFilters {
   q: string;
   city: string;
   categories: string[];
-  mode: string;
   priceOnly: boolean;
 }
 
 function stripAccents(value: string): string {
   return value.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+}
+
+/** Mirrors the client: cities are compared folded, not by string equality. */
+function normalizeCity(city: string): string {
+  return stripAccents(city).trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+function sameCity(a: string, b: string): boolean {
+  return normalizeCity(a) === normalizeCity(b);
 }
 
 function citySearchTerms(providers: PublicProvider[]): string[] {
@@ -45,20 +53,12 @@ export function matchesFilters(
     .join(' ')
     .toLowerCase();
 
-  if (
-    filters.mode !== 'Todos' &&
-    provider.mode !== filters.mode &&
-    provider.mode !== 'Ambos'
-  ) {
-    return false;
-  }
-
   if (filters.priceOnly && !provider.price) return false;
 
   if (
     filters.city !== ALL_CITIES &&
     !queryNamesCity(query, cityTerms) &&
-    !provider.cities.includes(filters.city)
+    !provider.cities.some((city) => sameCity(city, filters.city))
   ) {
     return false;
   }

@@ -75,7 +75,6 @@ router.get('/providers', async (req, res) => {
     q: query.q,
     city: query.city ?? DEFAULT_CITY,
     categories: query.categories,
-    mode: query.mode,
     priceOnly: query.priceOnly,
   });
   res.json({ providers });

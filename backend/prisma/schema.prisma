@@ -13,6 +13,11 @@ model User {
   email        String   @unique
   passwordHash String   @map("password_hash")
   name         String
+  firstName    String   @default("") @map("first_name")
+  lastName     String   @default("") @map("last_name")
+  /* Digits only, the way `providers.whatsapp` is stored. Registration fills
+     both from the same field; the profile screen edits only the provider's. */
+  mobile       String   @default("")
   providerId   String   @unique @map("provider_id")
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")

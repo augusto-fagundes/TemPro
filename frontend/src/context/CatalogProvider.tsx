@@ -8,7 +8,10 @@ import {
   type ReactNode,
 } from 'react';
 
+import { useLocation } from 'react-router-dom';
+
 import { api, type CatalogMeta } from '../lib/api';
+import { hasSeenGuestOnboarding, isAuthPath, isGatePath } from '../lib/guest';
 import type { OwnedService, Provider, ProviderProfile } from '../types';
 import { useAuth } from './AuthProvider';
 
@@ -73,6 +76,10 @@ function applyProfile(base: Provider, profile: ProviderProfile): Provider {
 
 export function CatalogProvider({ children }: { children: ReactNode }) {
   const { token, logout, setUser } = useAuth();
+  const { pathname } = useLocation();
+  const skipSplash =
+    isGatePath(pathname) ||
+    (!token && !hasSeenGuestOnboarding() && !isAuthPath(pathname));
   const [catalog, setCatalog] = useState<Provider[]>([]);
   const [meta, setMeta] = useState<CatalogApi['meta']>(EMPTY_META);
   const [profile, setProfileState] = useState<ProviderProfile>(EMPTY_PROFILE);
@@ -184,7 +191,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     ],
   );
 
-  if (loading) {
+  if (loading && !skipSplash) {
     return (
       <div className="sp-container sp-block">
         <div className="sp-empty">
@@ -195,7 +202,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     );
   }
 
-  if (error) {
+  if (error && !skipSplash) {
     return (
       <div className="sp-container sp-block">
         <div className="sp-empty">

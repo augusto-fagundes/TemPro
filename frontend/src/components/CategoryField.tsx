@@ -28,6 +28,8 @@ export function CategoryField({
       <span className="sp-field__label">{label}</span>
       <FilterMenu
         variant="field"
+        searchable
+        searchPlaceholder="Digite a categoria"
         label={label}
         summary={
           !value

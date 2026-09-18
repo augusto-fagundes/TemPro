@@ -134,7 +134,7 @@ export function CityPicker({
           </svg>
         </div>
 
-        {open && (
+        {open && query.trim().length >= 2 && (
           <ul
             id={menuId}
             className="sp-menu__list"
@@ -142,22 +142,17 @@ export function CityPicker({
             aria-label={label}
             aria-multiselectable
           >
-            {query.trim().length < 2 && (
-              <li className="sp-menu__empty" role="presentation">
-                Digite pelo menos 2 letras para buscar no IBGE.
-              </li>
-            )}
-            {query.trim().length >= 2 && busy && (
+            {busy && (
               <li className="sp-menu__empty" role="presentation">
                 Buscando cidades…
               </li>
             )}
-            {query.trim().length >= 2 && !busy && error && (
+            {!busy && error && (
               <li className="sp-menu__empty" role="presentation">
                 {error}
               </li>
             )}
-            {query.trim().length >= 2 && !busy && !error && visible.length === 0 && (
+            {!busy && !error && visible.length === 0 && (
               <li className="sp-menu__empty" role="presentation">
                 Nenhuma cidade encontrada.
               </li>

@@ -1,22 +1,24 @@
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
+import { CitySearch } from '../components/CitySearch';
 import { FilterMenu } from '../components/FilterMenu';
 import { ProviderCard } from '../components/ProviderCard';
 import { useMeta } from '../context/CatalogProvider';
 import { useCatalog } from '../context/ProfileProvider';
 import { useToast } from '../context/ToastProvider';
 import { openExternal, whatsappUrl } from '../lib/contact';
-import { countLabel, resultsTitle, searchProviders } from '../lib/search';
+import {
+  categorySummary,
+  cityHasProviders,
+  countLabel,
+  otherListedCities,
+  resultsTitle,
+  searchProviders,
+  shortCity,
+} from '../lib/search';
 import { filtersFromParams, paramsFromFilters } from '../lib/urls';
-import type { ModeFilter, Provider, SearchFilters } from '../types';
-import { ALL_CITIES } from '../types';
-
-const MODES: ModeFilter[] = [
-  'Todos',
-  'Atende em domicílio',
-  'Possui estabelecimento',
-  'Ambos',
-];
+import type { Provider, SearchFilters } from '../types';
+import { DEFAULT_CITY } from '../types';
 
 export function ResultsPage() {
   const [params, setParams] = useSearchParams();
@@ -34,16 +36,8 @@ export function ResultsPage() {
     apply({ categories: next, q: '' });
   };
 
-  const categorySummary = () => {
-    const picked = filters.categories;
-    if (picked.length === 0) return 'Todas as categorias';
-    if (picked.length === 1) return picked[0];
-    if (picked.length === 2) return `${picked[0]} e ${picked[1]}`;
-    return `${picked[0]} +${picked.length - 1}`;
-  };
-
   const clearAll = () =>
-    apply({ q: '', categories: [], mode: 'Todos', priceOnly: false });
+    apply({ q: '', categories: [], priceOnly: false });
 
   const openWhatsApp = (provider: Provider) => {
     if (!openExternal(whatsappUrl(provider))) {
@@ -51,11 +45,14 @@ export function ResultsPage() {
     }
   };
 
+  /* Nobody serves the city at all — a different answer from "nobody matches
+     these filters", and the only one that is true when the city was typed
+     into the search rather than picked from the catalogue. */
+  const cityIsEmpty = !cityHasProviders(catalog, filters.city);
+  const elsewhere = cityIsEmpty ? otherListedCities(CITIES, filters.city) : [];
+
   const narrowed =
-    filters.q !== '' ||
-    filters.categories.length > 0 ||
-    filters.mode !== 'Todos' ||
-    filters.priceOnly;
+    filters.q !== '' || filters.categories.length > 0 || filters.priceOnly;
 
   return (
     <div className="sp-container sp-block">
@@ -79,7 +76,7 @@ export function ResultsPage() {
         <div className="sp-filters__row">
           <FilterMenu
             label="Categoria"
-            summary={categorySummary()}
+            summary={categorySummary(filters.categories)}
             multiple
             clearLabel="Todas as categorias"
             active={filters.categories.length > 0}
@@ -91,28 +88,11 @@ export function ResultsPage() {
             onChange={setCategories}
           />
 
-          <FilterMenu
+          <CitySearch
             label="Cidade"
-            summary={filters.city}
-            selected={[filters.city]}
-            options={CITIES.map((city) => ({ value: city, label: city }))}
-            onChange={(next) => apply({ city: next[0] ?? ALL_CITIES })}
-          />
-
-          <FilterMenu
-            label="Forma de atendimento"
-            summary={
-              filters.mode === 'Todos' ? 'Qualquer atendimento' : filters.mode
-            }
-            active={filters.mode !== 'Todos'}
-            selected={[filters.mode]}
-            options={MODES.map((mode) => ({
-              value: mode,
-              label: mode === 'Todos' ? 'Qualquer atendimento' : mode,
-            }))}
-            onChange={(next) =>
-              apply({ mode: (next[0] as ModeFilter) ?? 'Todos' })
-            }
+            value={filters.city}
+            active={filters.city !== DEFAULT_CITY}
+            onChange={(city) => apply({ city })}
           />
 
           <button
@@ -146,26 +126,54 @@ export function ResultsPage() {
             />
           ))}
         </div>
+      ) : cityIsEmpty ? (
+        <div className="sp-empty">
+          <h2 className="sp-empty__title">
+            Ainda não há prestadores em {shortCity(filters.city)}
+          </h2>
+          <p className="sp-empty__text">
+            Ninguém cadastrou serviços nessa cidade até agora. Assim que
+            alguém se cadastrar, aparece aqui.
+          </p>
+          {elsewhere.length > 0 && (
+            <>
+              <p className="sp-empty__label">Cidades com prestadores</p>
+              <div className="sp-empty__cities">
+                {elsewhere.map((city) => (
+                  <button
+                    key={city}
+                    type="button"
+                    className="sp-chip"
+                    onClick={() => apply({ city })}
+                  >
+                    {city}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+          <div className="sp-empty__actions">
+            <Link
+              className="sp-btn sp-btn--primary sp-btn--md"
+              to="/cadastrar"
+              state={{ city: filters.city }}
+            >
+              Atendo nessa cidade
+            </Link>
+          </div>
+        </div>
       ) : (
         <div className="sp-empty">
           <h2 className="sp-empty__title">Nenhum profissional encontrado</h2>
           <p className="sp-empty__text">
-            Ninguém atende essa combinação por aqui. Tente ampliar a busca:
+            Ninguém em {shortCity(filters.city)} atende essa combinação.
+            Tente com menos filtros.
           </p>
           <div className="sp-empty__actions">
-            {filters.city !== ALL_CITIES && (
-              <button
-                type="button"
-                className="sp-btn sp-btn--primary sp-btn--md"
-                onClick={() => apply({ city: ALL_CITIES })}
-              >
-                Buscar em todas as cidades
-              </button>
-            )}
             {narrowed && (
               <button
                 type="button"
-                className="sp-btn sp-btn--outline sp-btn--md"
+                className="sp-btn sp-btn--primary sp-btn--md"
                 onClick={clearAll}
               >
                 Limpar filtros

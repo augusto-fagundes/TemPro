@@ -24,7 +24,7 @@ export function whatsappUrl(provider: Provider): string | null {
   if (!number) return null;
 
   const text = encodeURIComponent(
-    `Olá, ${provider.name}! Encontrei você no Serviços Perto.`,
+    `Olá, ${provider.name}! Encontrei você no TemPro.`,
   );
   return `https://wa.me/${number}?text=${text}`;
 }

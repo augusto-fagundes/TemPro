@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Serviços Perto — frontend (Vite + React + TypeScript)",
+  "description": "TemPro — frontend (Vite + React + TypeScript)",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

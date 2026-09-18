@@ -1,6 +1,5 @@
 import { normalizeCities } from './cities';
 import { prisma } from './db';
-import { ALL_CITIES } from './data/taxonomy';
 import { HttpError } from './errors';
 import {
   providerInclude,
@@ -78,10 +77,8 @@ export async function buildMeta(): Promise<CatalogMeta> {
 
   return {
     categories: listed.sort((a, b) => a.localeCompare(b, 'pt-BR')),
-    cities: [
-      ...sortPt(distinct(providers.flatMap((p) => p.cities))),
-      ALL_CITIES,
-    ],
+    // The cities someone actually serves; there is no "every city" search.
+    cities: sortPt(distinct(providers.flatMap((p) => p.cities))),
     featuredCategories,
     serviceCategories,
     categoryPlural: Object.fromEntries(

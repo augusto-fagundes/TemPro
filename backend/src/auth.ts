@@ -14,7 +14,12 @@ export interface AuthContext {
 export interface PublicUser {
   id: number;
   email: string;
+  /** The business name — what the public listing is called. */
   name: string;
+  firstName: string;
+  lastName: string;
+  /** Digits only. The account's contact, not the listing's. */
+  mobile: string;
   providerId: string;
 }
 
@@ -98,12 +103,18 @@ export function toPublicUser(user: {
   id: number;
   email: string;
   name: string;
+  firstName: string;
+  lastName: string;
+  mobile: string;
   providerId: string;
 }): PublicUser {
   return {
     id: user.id,
     email: user.email,
     name: user.name,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    mobile: user.mobile,
     providerId: user.providerId,
   };
 }
