@@ -1,0 +1,9 @@
+{
+  "installCommand": "cd .. && npm ci",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/src/index.ts"
+    }
+  ]
+}
