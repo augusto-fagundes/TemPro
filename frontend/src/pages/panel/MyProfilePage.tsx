@@ -13,7 +13,7 @@ import type { ProviderMode, ProviderProfile } from "../../types";
 import { PROVIDER_MODES } from "../../types";
 
 export function MyProfilePage() {
-  const { profile, update, reset } = useProfile();
+  const { profile, update } = useProfile();
   const { serviceCategories, signedInProviderId } = useMeta();
   const toast = useToast();
   const navigate = useNavigate();
@@ -194,10 +194,6 @@ export function MyProfilePage() {
             maxLength={90}
             placeholder="Instalações, manutenção elétrica e reparos residenciais."
           />
-          <p className="sp-field__hint">
-            Uma linha, mostrada no seu card na busca. {90 - draft.desc.length}{" "}
-            caracteres restantes.
-          </p>
         </div>
 
         <div className="sp-field">
@@ -210,9 +206,6 @@ export function MyProfilePage() {
             value={draft.about}
             onChange={(e) => set("about", e.target.value)}
           />
-          <p className="sp-field__hint">
-            O texto que abre o seu perfil público.
-          </p>
         </div>
 
         <fieldset className="sp-fieldset">
@@ -327,35 +320,6 @@ export function MyProfilePage() {
           </Link>
         </div>
       </form>
-
-      <div className="sp-danger">
-        <div>
-          <h2 className="sp-danger__title">Restaurar dados originais</h2>
-          <p className="sp-danger__text">
-            Volta o perfil ao cadastro de exemplo, descartando suas alterações.
-          </p>
-        </div>
-        <button
-          type="button"
-          className="sp-btn sp-btn--outline sp-btn--danger sp-btn--md"
-          onClick={() => {
-            void reset()
-              .then(() => {
-                toast("Perfil restaurado");
-                navigate("/painel");
-              })
-              .catch((err: unknown) =>
-                toast(
-                  err instanceof Error
-                    ? err.message
-                    : "Não foi possível restaurar o perfil",
-                ),
-              );
-          }}
-        >
-          Restaurar
-        </button>
-      </div>
     </div>
   );
 }
