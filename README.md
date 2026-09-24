@@ -38,7 +38,12 @@ npm run build:api      # backend → backend/dist/
 npm run preview        # serve o build do frontend
 npm run typecheck
 npm run typecheck:api
+npm run test:e2e       # Playwright (sobe API + Vite se ainda não estiverem no ar)
+npm run test:e2e:ui    # modo interativo do Playwright
 ```
+
+Os e2e ficam em `e2e/` e esperam o banco seedado (`joao@tempro.local` /
+`joao1234`). Na primeira máquina: `npx playwright install chromium`.
 
 Detalhes da API, schema e rotas: `backend/README.md`.
 

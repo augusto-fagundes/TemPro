@@ -5,7 +5,9 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
-    open: true,
+    /* Playwright and CI start Vite as a child process — opening a browser
+       tab on every run is noise, not help. */
+    open: process.env.PW_TEST !== '1' && !process.env.CI,
     proxy: {
       '/api': 'http://localhost:3333',
     },

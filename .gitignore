@@ -8,3 +8,9 @@ dist-ssr
 backend/.env
 frontend/dist
 backend/dist
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
