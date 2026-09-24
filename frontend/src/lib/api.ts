@@ -71,9 +71,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   /* A dead API is a TypeError from fetch, not an HTTP status, and its
      message ("Failed to fetch") reaches the screen as-is. Naming the cause
      here keeps every caller — the city search included — from having to. */
+  const root = (import.meta.env.VITE_API_URL ?? '/api').replace(/\/$/, '');
   let response: Response;
   try {
-    response = await fetch(`/api${path}`, { ...init, headers });
+    response = await fetch(`${root}${path}`, { ...init, headers });
   } catch {
     throw new Error('Sem conexão com o servidor do TemPro');
   }
