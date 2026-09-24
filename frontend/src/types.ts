@@ -111,6 +111,16 @@ export interface AuthUser {
   providerId: string;
 }
 
+/** First service published together with the account. */
+export interface RegisterServiceInput {
+  name: string;
+  category?: string;
+  description?: string;
+  mode?: ServiceMode;
+  priceType?: PriceType;
+  priceAmount?: string;
+}
+
 /** Everything `POST /auth/register` needs to open an account. */
 export interface RegisterInput {
   name: string;
@@ -122,6 +132,8 @@ export interface RegisterInput {
   city?: string;
   cities?: string[];
   category?: string;
+  /** At least one service is required — the listing would otherwise be empty. */
+  service: RegisterServiceInput;
 }
 
 /** Everything the provider can change about their public listing. */

@@ -7,6 +7,9 @@ import { useAuth } from '../context/AuthProvider';
 import { useMeta } from '../context/CatalogProvider';
 import { useToast } from '../context/ToastProvider';
 import { markGuestOnboarded } from '../lib/guest';
+import { formatPrice } from '../lib/pricing';
+import type { PriceType, ServiceMode } from '../types';
+import { PRICE_TYPES, SERVICE_MODES } from '../types';
 
 /**
  * Formats a celular as it is typed: "(51) 99999-8888". Rebuilt from the
@@ -60,6 +63,11 @@ export function RegisterPage() {
     state?.city ? [state.city] : [],
   );
   const [category, setCategory] = useState('');
+  const [serviceName, setServiceName] = useState('');
+  const [serviceDescription, setServiceDescription] = useState('');
+  const [serviceMode, setServiceMode] = useState<ServiceMode>('Em domicílio');
+  const [priceType, setPriceType] = useState<PriceType>('Sob consulta');
+  const [priceAmount, setPriceAmount] = useState('');
   const [busy, setBusy] = useState(false);
 
   const resolvedCategory =
@@ -82,6 +90,10 @@ export function RegisterPage() {
       toast('Selecione pelo menos uma cidade');
       return;
     }
+    if (!serviceName.trim()) {
+      toast('Dê um nome ao serviço para publicá-lo');
+      return;
+    }
 
     setBusy(true);
     try {
@@ -95,6 +107,14 @@ export function RegisterPage() {
         city: cities[0],
         cities,
         category: resolvedCategory,
+        service: {
+          name: serviceName.trim(),
+          category: resolvedCategory,
+          description: serviceDescription.trim(),
+          mode: serviceMode,
+          priceType,
+          priceAmount: priceType === 'Sob consulta' ? '' : priceAmount.trim(),
+        },
       });
       markGuestOnboarded();
       toast('Conta criada');
@@ -208,7 +228,7 @@ export function RegisterPage() {
           </fieldset>
 
           <fieldset className="sp-form__group">
-            <legend className="sp-form__legend">Seu serviço</legend>
+            <legend className="sp-form__legend">Seu negócio</legend>
             <div className="sp-field">
               <label className="sp-field__label" htmlFor="reg-name">
                 Nome do negócio
@@ -229,6 +249,93 @@ export function RegisterPage() {
             />
             <CityPicker selected={cities} onChange={setCities} />
           </fieldset>
+
+          {/* Without a first service the public profile is an empty shell —
+              collect it here so the listing is usable the moment the account
+              exists. Category follows the business; mode and price match the
+              panel form defaults. */}
+          <fieldset className="sp-form__group">
+            <legend className="sp-form__legend">Primeiro serviço</legend>
+            <div className="sp-field">
+              <label className="sp-field__label" htmlFor="reg-service-name">
+                Nome do serviço
+              </label>
+              <input
+                id="reg-service-name"
+                className="sp-input"
+                value={serviceName}
+                onChange={(e) => setServiceName(e.target.value)}
+                placeholder="Instalação elétrica residencial"
+                required
+              />
+            </div>
+            <div className="sp-field">
+              <label className="sp-field__label" htmlFor="reg-service-desc">
+                Descrição
+              </label>
+              <textarea
+                id="reg-service-desc"
+                className="sp-textarea"
+                value={serviceDescription}
+                onChange={(e) => setServiceDescription(e.target.value)}
+                placeholder="Instalações e manutenção elétrica residencial."
+              />
+              <p className="sp-field__hint">Aparece abaixo do nome no seu perfil.</p>
+            </div>
+            <fieldset className="sp-fieldset">
+              <legend className="sp-field__label sp-field__label--roomy">
+                Forma de atendimento
+              </legend>
+              <div className="sp-chiprow">
+                {SERVICE_MODES.map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    className={`sp-chip sp-chip--form${serviceMode === option ? ' sp-chip--on' : ''}`}
+                    aria-pressed={serviceMode === option}
+                    onClick={() => setServiceMode(option)}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+            <fieldset className="sp-fieldset">
+              <legend className="sp-field__label sp-field__label--roomy">
+                Preço (opcional)
+              </legend>
+              <div className="sp-chiprow">
+                {PRICE_TYPES.map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    className={`sp-chip sp-chip--form${priceType === option ? ' sp-chip--on' : ''}`}
+                    aria-pressed={priceType === option}
+                    onClick={() => setPriceType(option)}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+              {priceType !== 'Sob consulta' && (
+                <input
+                  className="sp-input sp-priceinput"
+                  type="number"
+                  min="0"
+                  inputMode="numeric"
+                  value={priceAmount}
+                  onChange={(e) => setPriceAmount(e.target.value)}
+                  placeholder="150"
+                  aria-label="Valor em reais"
+                />
+              )}
+              <p className="sp-field__hint">
+                Aparecerá como{' '}
+                <strong>{formatPrice(priceType, priceAmount)}</strong>.
+              </p>
+            </fieldset>
+          </fieldset>
+
           <div className="sp-form__actions sp-form__actions--stack">
             <button
               type="submit"

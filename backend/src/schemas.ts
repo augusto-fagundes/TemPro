@@ -44,6 +44,16 @@ export const registerSchema = z.object({
   city: z.string().trim().optional(),
   cities: z.array(z.string().trim().min(1)).optional(),
   category: z.string().trim().optional(),
+  /* A listing without at least one service is empty on the public profile —
+     registration creates that first row in the same transaction. */
+  service: z.object({
+    name: z.string().trim().min(1, 'Dê um nome ao serviço para publicá-lo'),
+    category: z.string().trim().min(1).optional(),
+    description: z.string().default(''),
+    mode: z.enum(SERVICE_MODES).default('Em domicílio'),
+    priceType: z.enum(PRICE_TYPES).default('Sob consulta'),
+    priceAmount: z.string().default(''),
+  }),
 });
 
 export const citySearchSchema = z.object({

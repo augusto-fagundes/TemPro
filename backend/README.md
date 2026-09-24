@@ -54,7 +54,7 @@ Usuário de demonstração (depois do seed): `joao@tempro.local` / `joao1234`.
 | Método | Caminho | O quê |
 | --- | --- | --- |
 | `GET` | `/api/health` | Liveness |
-| `POST` | `/api/auth/register` | Cria usuário + prestador |
+| `POST` | `/api/auth/register` | Cria usuário + prestador + primeiro serviço (obrigatório) |
 | `POST` | `/api/auth/login` | Login (devolve JWT) |
 | `GET` | `/api/auth/me` | Usuário logado, perfil, serviços e produtos |
 | `GET` | `/api/categories` | Categorias cadastradas |

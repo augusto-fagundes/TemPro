@@ -1,6 +1,8 @@
+import type { Prisma } from '@prisma/client';
+
 import { normalizeCities } from './cities';
 import { prisma } from './db';
-import { DEFAULT_CITY } from './data/taxonomy';
+import { DEFAULT_CITY, PRICE_TYPES, SERVICE_MODES } from './data/taxonomy';
 import { HttpError } from './errors';
 import {
   hashPassword,
@@ -9,6 +11,18 @@ import {
   verifyPassword,
   type PublicUser,
 } from './auth';
+import { formatPrice, listingPriceFromServices, type PriceType } from './pricing';
+
+type ServiceMode = (typeof SERVICE_MODES)[number];
+
+interface RegisterServiceInput {
+  name: string;
+  category?: string;
+  description?: string;
+  mode?: ServiceMode;
+  priceType?: PriceType;
+  priceAmount?: string;
+}
 
 export interface AuthSession {
   token: string;
@@ -38,6 +52,24 @@ async function uniqueProviderId(name: string): Promise<string> {
   return candidate;
 }
 
+async function ensureCategory(tx: Prisma.TransactionClient, name: string) {
+  const trimmed = name.trim();
+  const existing = await tx.category.findUnique({ where: { name: trimmed } });
+  if (existing) return existing;
+
+  const last = await tx.category.findFirst({
+    orderBy: { sortOrder: 'desc' },
+    select: { sortOrder: true },
+  });
+  return tx.category.create({
+    data: {
+      name: trimmed,
+      plural: trimmed,
+      sortOrder: (last?.sortOrder ?? 0) + 1,
+    },
+  });
+}
+
 export async function registerUser(input: {
   name: string;
   firstName: string;
@@ -49,10 +81,16 @@ export async function registerUser(input: {
   city?: string;
   cities?: string[];
   category?: string;
+  service: RegisterServiceInput;
 }): Promise<AuthSession> {
   const email = input.email.trim().toLowerCase();
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) throw new HttpError(409, 'Este e-mail já está cadastrado');
+
+  const serviceName = input.service.name.trim();
+  if (!serviceName) {
+    throw new HttpError(400, 'Dê um nome ao serviço para publicá-lo');
+  }
 
   const last = await prisma.provider.findFirst({
     orderBy: { sortOrder: 'desc' },
@@ -68,6 +106,24 @@ export async function registerUser(input: {
     throw new HttpError(400, 'Informe a categoria do seu negócio');
   }
 
+  const serviceCategory =
+    input.service.category?.trim() || category;
+  if (serviceCategory === 'Outro') {
+    throw new HttpError(400, 'Informe a categoria do serviço');
+  }
+
+  const priceType = (input.service.priceType ?? 'Sob consulta') as PriceType;
+  if (!(PRICE_TYPES as readonly string[]).includes(priceType)) {
+    throw new HttpError(400, 'Tipo de preço inválido');
+  }
+  const mode = input.service.mode ?? 'Em domicílio';
+  if (!(SERVICE_MODES as readonly string[]).includes(mode)) {
+    throw new HttpError(400, 'Forma de atendimento inválida');
+  }
+  const amount =
+    priceType === 'Sob consulta' ? '' : (input.service.priceAmount ?? '').trim();
+  const displayPrice = formatPrice(priceType, amount);
+
   const user = await prisma.$transaction(async (tx) => {
     await tx.provider.create({
       data: {
@@ -78,7 +134,7 @@ export async function registerUser(input: {
         city,
         serviceCities: cities.length > 0 ? cities : [city],
         mode: 'Atende em domicílio',
-        listingPrice: '',
+        listingPrice: listingPriceFromServices([displayPrice]),
         about: '',
         /* The listing is only worth publishing if someone can be reached on
            it, so the celular given at sign-up seeds the WhatsApp button. From
@@ -88,7 +144,7 @@ export async function registerUser(input: {
         sortOrder: (last?.sortOrder ?? 0) + 1,
       },
     });
-    return tx.user.create({
+    const createdUser = await tx.user.create({
       data: {
         email,
         passwordHash,
@@ -99,6 +155,23 @@ export async function registerUser(input: {
         providerId,
       },
     });
+
+    const categoryRow = await ensureCategory(tx, serviceCategory);
+    await tx.service.create({
+      data: {
+        providerId,
+        categoryId: categoryRow.id,
+        name: serviceName,
+        description: (input.service.description ?? '').trim(),
+        mode,
+        priceType,
+        priceAmount: amount,
+        displayPrice,
+        sortOrder: 0,
+      },
+    });
+
+    return createdUser;
   });
 
   const publicUser = toPublicUser(user);
