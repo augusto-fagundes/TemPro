@@ -54,6 +54,7 @@ model Provider {
   whatsapp     String?
   phone        String?
   instagram    String?
+  facebook     String?
   sortOrder    Int      @default(0) @map("sort_order")
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")

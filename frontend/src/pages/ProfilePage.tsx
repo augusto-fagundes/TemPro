@@ -8,6 +8,7 @@ import { useCatalog } from '../context/ProfileProvider';
 import { useServices } from '../context/ServicesProvider';
 import { useToast } from '../context/ToastProvider';
 import {
+  facebookUrl,
   instagramUrl,
   openExternal,
   phoneUrl,
@@ -57,6 +58,7 @@ export function ProfilePage() {
     whats: () => handOff(whatsappUrl(p), `Abrindo WhatsApp de ${p.name}`),
     call: () => handOff(phoneUrl(p), `Ligando para ${p.name}`),
     insta: () => handOff(instagramUrl(p), `Abrindo Instagram de ${p.name}`),
+    face: () => handOff(facebookUrl(p), `Abrindo Facebook de ${p.name}`),
   });
 
   const actions = contact(provider);
@@ -177,20 +179,27 @@ export function ProfilePage() {
             >
               WhatsApp
             </button>
+            <button
+              type="button"
+              className="sp-btn sp-btn--outline sp-btn--md sp-btn--block"
+              onClick={actions.call}
+            >
+              Ligar
+            </button>
             <div className="sp-contactcard__row">
-              <button
-                type="button"
-                className="sp-btn sp-btn--outline sp-btn--md sp-btn--grow"
-                onClick={actions.call}
-              >
-                Ligar
-              </button>
               <button
                 type="button"
                 className="sp-btn sp-btn--outline sp-btn--md sp-btn--grow"
                 onClick={actions.insta}
               >
                 Instagram
+              </button>
+              <button
+                type="button"
+                className="sp-btn sp-btn--outline sp-btn--md sp-btn--grow"
+                onClick={actions.face}
+              >
+                Facebook
               </button>
             </div>
 

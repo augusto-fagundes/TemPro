@@ -3,8 +3,9 @@ import type { Provider } from '../types';
 /**
  * Contact hand-offs. Every provider in the seed catalogue is still missing
  * its real numbers, so each helper returns `null` and the caller falls back
- * to a confirmation toast. Fill `whatsapp` / `phone` / `instagram` on a
- * provider and the same buttons start opening the real thing — no UI change.
+ * to a confirmation toast. Fill `whatsapp` / `phone` / `instagram` /
+ * `facebook` on a provider and the same buttons start opening the real
+ * thing — no UI change.
  */
 
 /**
@@ -33,10 +34,31 @@ export function phoneUrl(provider: Provider): string | null {
   return provider.phone ? `tel:${provider.phone}` : null;
 }
 
+function withHttps(value: string): string {
+  return /^https?:\/\//i.test(value) ? value : `https://${value}`;
+}
+
+/**
+ * Accepts a bare handle ("joao"), "@joao", or a full Instagram URL. Stored
+ * values may be either form after the panel normalizes them.
+ */
 export function instagramUrl(provider: Provider): string | null {
-  return provider.instagram
-    ? `https://instagram.com/${provider.instagram}`
-    : null;
+  const raw = provider.instagram?.trim();
+  if (!raw) return null;
+  if (/^https?:\/\//i.test(raw) || /instagram\.com/i.test(raw)) {
+    return withHttps(raw);
+  }
+  return `https://instagram.com/${raw.replace(/^@/, '')}`;
+}
+
+/** Same rules as Instagram: vanity name or full Facebook / fb.com URL. */
+export function facebookUrl(provider: Provider): string | null {
+  const raw = provider.facebook?.trim();
+  if (!raw) return null;
+  if (/^https?:\/\//i.test(raw) || /(facebook|fb)\.com/i.test(raw)) {
+    return withHttps(raw);
+  }
+  return `https://www.facebook.com/${raw.replace(/^@/, '')}`;
 }
 
 /**

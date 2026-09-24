@@ -50,6 +50,7 @@ const EMPTY_PROFILE: ProviderProfile = {
   whatsapp: '',
   phone: '',
   instagram: '',
+  facebook: '',
   photoUrl: '',
 };
 
@@ -70,6 +71,7 @@ function applyProfile(base: Provider, profile: ProviderProfile): Provider {
     whatsapp: profile.whatsapp || undefined,
     phone: profile.phone || undefined,
     instagram: profile.instagram || undefined,
+    facebook: profile.facebook || undefined,
     photoUrl: profile.photoUrl || undefined,
   };
 }

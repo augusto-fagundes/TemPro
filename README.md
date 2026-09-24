@@ -136,15 +136,19 @@ monograma tintado.
 
 ## Contato
 
-`frontend/src/lib/contact.ts` monta os links de WhatsApp, telefone e Instagram
-a partir dos campos `whatsapp` / `phone` / `instagram` do prestador. Nenhum
-prestador do catálogo de exemplo tem esses dados, então os botões mostram um
-toast de confirmação — mas **em "Meu perfil" você preenche os seus e os botões
-passam a abrir o destino real**, sem mudar a interface.
+`frontend/src/lib/contact.ts` monta os links de WhatsApp, telefone, Instagram
+e Facebook a partir dos campos `whatsapp` / `phone` / `instagram` /
+`facebook` do prestador. Nenhum prestador do catálogo de exemplo tem esses
+dados, então os botões mostram um toast de confirmação — mas **em "Meu perfil"
+você preenche os seus e os botões passam a abrir o destino real**, sem mudar
+a interface.
 
 Número de WhatsApp é normalizado para E.164: as pessoas digitam
 "(51) 99999-8888", e um número nacional de 10 ou 11 dígitos ganha o 55 na
 frente. Sem isso o `wa.me` sairia quebrado.
+
+Instagram e Facebook aceitam nome de usuário (`@joao` / `joao`) ou o link da
+página — o painel normaliza os dois formatos.
 
 ## Configuração
 

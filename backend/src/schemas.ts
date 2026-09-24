@@ -68,6 +68,7 @@ export const profileSchema = z.object({
   whatsapp: z.string().default(''),
   phone: z.string().default(''),
   instagram: z.string().default(''),
+  facebook: z.string().default(''),
   photoUrl: z.string().default(''),
 });
 

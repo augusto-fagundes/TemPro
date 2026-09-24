@@ -50,6 +50,7 @@ export interface PublicProvider {
   whatsapp?: string;
   phone?: string;
   instagram?: string;
+  facebook?: string;
 }
 
 export interface ProviderProfile {
@@ -64,6 +65,7 @@ export interface ProviderProfile {
   whatsapp: string;
   phone: string;
   instagram: string;
+  facebook: string;
   photoUrl: string;
 }
 
@@ -141,6 +143,7 @@ export function toPublicProvider(provider: ProviderWithRelations): PublicProvide
     whatsapp: optional(provider.whatsapp),
     phone: optional(provider.phone),
     instagram: optional(provider.instagram),
+    facebook: optional(provider.facebook),
   };
 }
 
@@ -157,6 +160,7 @@ export function toProfile(provider: DbProvider): ProviderProfile {
     whatsapp: provider.whatsapp ?? '',
     phone: provider.phone ?? '',
     instagram: provider.instagram ?? '',
+    facebook: provider.facebook ?? '',
     photoUrl: provider.photoUrl ?? '',
   };
 }

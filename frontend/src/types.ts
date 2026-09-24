@@ -56,8 +56,13 @@ export interface Provider {
   /** Digits only, with country and area code — e.g. "5551999998888". */
   whatsapp?: string;
   phone?: string;
-  /** Handle without the "@". */
+  /**
+   * Instagram handle or full profile URL. Either form is accepted in the
+   * panel; the public button resolves both.
+   */
   instagram?: string;
+  /** Facebook vanity name or full page/profile URL. */
+  facebook?: string;
 }
 
 export interface PublicProduct {
@@ -132,6 +137,7 @@ export interface ProviderProfile {
   whatsapp: string;
   phone: string;
   instagram: string;
+  facebook: string;
   photoUrl: string;
 }
 

@@ -16,6 +16,7 @@ import {
 import { formatPrice, listingPriceFromServices, type PriceType } from './pricing';
 import { searchProviders, type SearchFilters } from './search';
 import { SEED_PROVIDERS } from './data/seed-providers';
+import { normalizeFacebook, normalizeInstagram } from './social';
 import { getUserById } from './users';
 
 function distinct(values: string[]): string[] {
@@ -120,7 +121,8 @@ export async function updatePanelProfile(
       address: showsAddress ? patch.address.trim() || null : null,
       whatsapp: patch.whatsapp.replace(/\D/g, '') || null,
       phone: patch.phone.trim() || null,
-      instagram: patch.instagram.trim().replace(/^@/, '') || null,
+      instagram: normalizeInstagram(patch.instagram) || null,
+      facebook: normalizeFacebook(patch.facebook) || null,
       photoUrl: patch.photoUrl.trim() || null,
     },
   });
@@ -147,6 +149,7 @@ export async function resetPanelProfile(providerId: string): Promise<ProviderPro
       whatsapp: null,
       phone: null,
       instagram: null,
+      facebook: null,
     },
   });
   return toProfile(updated);
