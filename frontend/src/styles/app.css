@@ -185,6 +185,25 @@ a:hover {
   border-bottom-color: transparent;
 }
 
+/* Slim brand-only bar on a provider profile — less chrome above the person. */
+.sp-header--compact .sp-header__inner {
+  padding-block: var(--space-2);
+}
+
+.sp-header--compact .sp-mark {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+}
+
+.sp-header--compact .sp-brand {
+  gap: 7px;
+}
+
+.sp-header--compact .sp-brand__name {
+  font-size: 15px;
+}
+
 /* Secondary to everything else up here — a way back to your own account, not
    an invitation. Sized down to a text link, but padded back out to a 44px
    target so it stays thumb-sized. */
