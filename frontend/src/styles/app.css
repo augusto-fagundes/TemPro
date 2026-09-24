@@ -2452,6 +2452,24 @@ a:hover {
   aspect-ratio: 4 / 3;
 }
 
+/* ── Logo picker (profile form) ─────────────────────────────────────────── */
+
+.sp-logo-pick {
+  width: 120px;
+  height: 120px;
+}
+
+.sp-logo-pick__slot {
+  width: 120px;
+  height: 120px;
+}
+
+.sp-logo-pick__clear {
+  margin-top: 8px;
+  padding: 0;
+  font-size: 13px;
+}
+
 /* ── Image slot ─────────────────────────────────────────────────────────── */
 
 .sp-slot {

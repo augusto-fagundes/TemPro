@@ -3,9 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { CategoryField, OTHER_CATEGORY } from "../../components/CategoryField";
 import { CityPicker } from "../../components/CityPicker";
+import { ImageSlot } from "../../components/ImageSlot";
 import { useMeta } from "../../context/CatalogProvider";
 import { useProfile } from "../../context/ProfileProvider";
 import { useToast } from "../../context/ToastProvider";
+import { fileToDataUrl } from "../../lib/image";
 import { providerPath } from "../../lib/urls";
 import type { ProviderMode, ProviderProfile } from "../../types";
 import { PROVIDER_MODES } from "../../types";
@@ -26,6 +28,8 @@ export function MyProfilePage() {
           : [],
   });
   const [touched, setTouched] = useState(false);
+  /** Remounts the logo slot after a failed pick or an explicit clear. */
+  const [logoEpoch, setLogoEpoch] = useState(0);
 
   const set = <K extends keyof ProviderProfile>(
     key: K,
@@ -97,20 +101,44 @@ export function MyProfilePage() {
         }}
       >
         <div className="sp-field">
-          <label className="sp-field__label" htmlFor="pf-logo">
+          <span className="sp-field__label" id="pf-logo-label">
             Logo
-          </label>
-          <input
-            id="pf-logo"
-            className="sp-input"
-            value={draft.photoUrl}
-            onChange={(e) => set("photoUrl", e.target.value)}
-            placeholder="https://…"
-          />
-          <p className="sp-field__hint">
-            Cole o link de uma imagem. Sem logo, seu perfil usa as iniciais do
-            nome.
-          </p>
+          </span>
+          <div className="sp-logo-pick">
+            <ImageSlot
+              key={logoEpoch}
+              className="sp-logo-pick__slot"
+              src={draft.photoUrl || undefined}
+              placeholder="Escolher imagem"
+              radius={20}
+              editable
+              onPick={async (file) => {
+                try {
+                  const dataUrl = await fileToDataUrl(file);
+                  set("photoUrl", dataUrl);
+                } catch (err) {
+                  setLogoEpoch((n) => n + 1);
+                  toast(
+                    err instanceof Error
+                      ? err.message
+                      : "Não foi possível usar esta imagem",
+                  );
+                }
+              }}
+            />
+          </div>
+          {draft.photoUrl ? (
+            <button
+              type="button"
+              className="sp-btn sp-btn--link sp-logo-pick__clear"
+              onClick={() => {
+                set("photoUrl", "");
+                setLogoEpoch((n) => n + 1);
+              }}
+            >
+              Remover logo
+            </button>
+          ) : null}
         </div>
 
         <div className="sp-field">

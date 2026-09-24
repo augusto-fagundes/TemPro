@@ -9,7 +9,7 @@ interface ImageSlotProps {
   className?: string;
   /** Let the viewer attach an image — used by the provider's upload grids. */
   editable?: boolean;
-  onPick?: (file: File) => void;
+  onPick?: (file: File) => void | Promise<void>;
 }
 
 /**
