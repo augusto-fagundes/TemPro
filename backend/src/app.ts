@@ -38,3 +38,5 @@ app.use(
     res.status(500).json({ error: 'Erro interno' });
   },
 );
+
+export default app;

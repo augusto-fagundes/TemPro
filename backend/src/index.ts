@@ -1,3 +1,5 @@
+import express from 'express';
+
 import { app } from './app';
 import { env } from './env';
 
@@ -7,4 +9,5 @@ if (!process.env.VERCEL) {
   });
 }
 
-export default app;
+const application: express.Express = app;
+export default application;
