@@ -21,6 +21,9 @@ export function PublicLayout() {
      draw a line across one continuous surface. Everywhere else the header
      floats over a grey page and still needs its edge. */
   const flush = pathname === '/';
+  /* Accounts only exist for providers, so no token on the home means a client
+     browsing — inviting them into the provider area is noise. */
+  const showHeaderLink = !isProviderProfile && (token || pathname !== '/');
 
   return (
     <div className="sp-app">
@@ -32,7 +35,7 @@ export function PublicLayout() {
         <div className="sp-header__inner">
           <Brand />
           {showSearch && <HeaderSearch />}
-          {!isProviderProfile && (
+          {showHeaderLink && (
             <Link className="sp-headerlink" to={token ? '/painel' : '/entrar'}>
               {token ? 'Painel' : 'Área do prestador'}
             </Link>
