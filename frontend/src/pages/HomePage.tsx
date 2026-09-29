@@ -379,6 +379,13 @@ export function HomePage() {
             >
               <div className="sp-cta-carousel__slide">
                 <div className="sp-cta">
+                  <span className="sp-cta__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                      <rect x="3" y="7" width="18" height="13" rx="2" />
+                      <path d="M3 12h18M12 11v2" />
+                    </svg>
+                  </span>
                   <div className="sp-cta__body">
                     <h2 className="sp-cta__title">Você presta serviços?</h2>
                     <p className="sp-cta__text">
@@ -387,16 +394,24 @@ export function HomePage() {
                     </p>
                   </div>
                   <Link
-                    className="sp-btn sp-btn--primary sp-btn--lg"
+                    className="sp-btn sp-btn--primary sp-btn--lg sp-btn--shine sp-cta__action"
                     to="/painel"
                   >
                     Cadastrar meus serviços
+                    <CtaArrow />
                   </Link>
                 </div>
               </div>
 
               <div className="sp-cta-carousel__slide">
                 <div className="sp-cta sp-cta--invite">
+                  <span className="sp-cta__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="9" cy="8" r="3.5" />
+                      <path d="M3 20a6 6 0 0 1 12 0" />
+                      <path d="M19 8v6M16 11h6" />
+                    </svg>
+                  </span>
                   <div className="sp-cta__body">
                     <h2 className="sp-cta__title">Conhece algum prestador?</h2>
                     <p className="sp-cta__text">
@@ -405,7 +420,7 @@ export function HomePage() {
                   </div>
                   <button
                     type="button"
-                    className="sp-btn sp-btn--primary sp-btn--lg"
+                    className="sp-btn sp-btn--primary sp-btn--lg sp-cta__action"
                     onClick={async () => {
                       const url = `${window.location.origin}/cadastrar`;
                       try {
@@ -417,6 +432,7 @@ export function HomePage() {
                     }}
                   >
                     Indicar prestador
+                    <CtaArrow />
                   </button>
                 </div>
               </div>
@@ -448,5 +464,24 @@ export function HomePage() {
         </div>
       </section>
     </>
+  );
+}
+
+function CtaArrow() {
+  return (
+    <svg
+      className="sp-cta__arrow"
+      viewBox="0 0 24 24"
+      width="18"
+      height="18"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
   );
 }
