@@ -1751,7 +1751,7 @@ a:hover {
   grid-area: 1 / 1;
   display: flex;
   width: 100%;
-  transition: transform 0.32s ease;
+  transition: transform 0.55s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 .sp-cta-carousel__slide {
@@ -1766,7 +1766,8 @@ a:hover {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sp-cta-carousel__track {
+  .sp-cta-carousel__track,
+  .sp-cta-carousel__dot {
     transition: none;
   }
 }
@@ -1786,6 +1787,7 @@ a:hover {
   border-radius: 999px;
   background: var(--color-neutral-300);
   cursor: pointer;
+  transition: width 0.3s ease, background-color 0.3s ease;
 }
 
 .sp-cta-carousel__dot--on {

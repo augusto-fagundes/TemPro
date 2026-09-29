@@ -28,6 +28,10 @@ const HERO_LINES = [["Encontre", "quem"], ["resolve."]];
 /** How long the headline count takes to reach its target, in ms. */
 const COUNT_UP_MS = 2200;
 
+/* The two invites under the categories: provider sign-up and referral. */
+const CTA_SLIDES = 2;
+const CTA_INTERVAL_MS = 3000;
+
 /**
  * True once the element has been on screen, and true from then on. The count
  * is the whole point of the card, so it has to be watched rather than missed
@@ -148,6 +152,21 @@ export function HomePage() {
   const [entered, setEntered] = useState(false);
   const [ctaIndex, setCtaIndex] = useState(0);
   const ctaStartX = useRef<number | null>(null);
+  const [ctaPaused, setCtaPaused] = useState(false);
+  /* Advances on its own, but the clock restarts on every change — a swipe or a
+     dot click gets its full 3s before the next slide — and it holds still while
+     the pointer or focus is on it, so a card never slides out from under a
+     click. Reduced motion opts out entirely: without the slide the swap would
+     be an unannounced jump. */
+  useEffect(() => {
+    if (ctaPaused) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = window.setTimeout(
+      () => setCtaIndex((index) => (index + 1) % CTA_SLIDES),
+      CTA_INTERVAL_MS,
+    );
+    return () => window.clearTimeout(timer);
+  }, [ctaIndex, ctaPaused]);
   useLayoutEffect(() => {
     const frame = requestAnimationFrame(() => setEntered(true));
     const fallback = window.setTimeout(() => setEntered(true), 400);
@@ -326,7 +345,21 @@ export function HomePage() {
       </section>
 
       <section className="sp-container sp-block">
-        <div className="sp-cta-carousel">
+        <div
+          className="sp-cta-carousel"
+          onPointerEnter={(event) => {
+            if (event.pointerType === "mouse") setCtaPaused(true);
+          }}
+          onPointerLeave={(event) => {
+            if (event.pointerType === "mouse") setCtaPaused(false);
+          }}
+          onFocus={() => setCtaPaused(true)}
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget)) {
+              setCtaPaused(false);
+            }
+          }}
+        >
           <div
             className="sp-cta-carousel__frame"
             onPointerDown={(event) => {
