@@ -324,28 +324,108 @@ a:hover {
   border-top: 1px solid var(--color-neutral-200);
   background: var(--sp-card);
   margin-top: var(--space-8);
+  color: var(--color-neutral-700);
+  font-size: 14px;
 }
 
+/* One column on the phone; brand wide and the link lists side by side from
+   the tablet up. */
 .sp-footer__inner {
   width: 100%;
   max-width: var(--sp-container);
   margin: 0 auto;
-  padding: var(--space-6) var(--space-4);
+  padding: var(--space-8) var(--space-4) var(--space-6);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6) var(--space-4);
+}
+
+.sp-footer__about {
+  grid-column: 1 / -1;
   display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  color: var(--color-text);
+}
+
+.sp-footer__lede {
+  margin: 0;
+  max-width: 34ch;
+  line-height: 1.5;
+  color: var(--color-neutral-700);
+}
+
+.sp-footer__heading {
+  margin: 0 0 var(--space-2);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+
+.sp-footer__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Padded out to a 36px row so neighbouring links stay tappable. */
+.sp-footer__link {
+  display: inline-flex;
   align-items: center;
+  min-height: 36px;
+  color: var(--color-neutral-800);
+  text-decoration: none;
+  /* The e-mail is one long word — let it break instead of widening the page. */
+  overflow-wrap: anywhere;
+}
+
+.sp-footer__icon {
+  flex: none;
+  margin-right: var(--space-2);
+  color: var(--color-neutral-600);
+}
+
+.sp-footer__link:hover .sp-footer__icon {
+  color: inherit;
+}
+
+.sp-footer__link:hover {
+  color: var(--sp-accent-strong);
+  text-decoration: underline;
+}
+
+.sp-footer__bar {
+  border-top: 1px solid var(--color-neutral-200);
+}
+
+.sp-footer__bar-inner {
+  width: 100%;
+  max-width: var(--sp-container);
+  margin: 0 auto;
+  padding: var(--space-4);
+  display: flex;
   justify-content: space-between;
   gap: var(--space-4);
   flex-wrap: wrap;
   font-size: 13px;
-  color: var(--color-neutral-700);
-}
-
-.sp-footer__link {
-  font-weight: 600;
+  color: var(--color-neutral-600);
 }
 
 @media (min-width: 640px) {
   .sp-footer__inner {
+    padding-inline: var(--space-6);
+    grid-template-columns: 2fr 1fr 1.3fr;
+  }
+
+  .sp-footer__about {
+    grid-column: auto;
+  }
+
+  .sp-footer__bar-inner {
     padding-inline: var(--space-6);
   }
 }

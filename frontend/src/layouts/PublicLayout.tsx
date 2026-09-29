@@ -1,6 +1,7 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
 
 import { Brand } from '../components/Brand';
+import { Footer } from '../components/Footer';
 import { HeaderSearch } from '../components/HeaderSearch';
 import { useAuth } from '../context/AuthProvider';
 
@@ -47,14 +48,7 @@ export function PublicLayout() {
         <Outlet />
       </main>
 
-      <footer className="sp-footer">
-        <div className="sp-footer__inner">
-          <span>TemPro · Vale do Rio Pardo</span>
-          <Link className="sp-footer__link" to={token ? '/painel' : '/cadastrar'}>
-            Cadastre seu serviço
-          </Link>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
