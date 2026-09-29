@@ -136,3 +136,10 @@ rtk init --global       # Add RTK to ~/.claude/CLAUDE.md
 
 Overall average: **60-90% token reduction** on common development operations.
 <!-- /rtk-instructions -->
+
+# Regras do projeto
+
+- Siga `AGENTS.md` (instruções compartilhadas com o Cursor).
+- Em qualquer implementação de produto (UI, copy, formulários, features), use a skill `clean-implementation` (`.claude/skills/clean-implementation/SKILL.md`, espelho de `.cursor/skills/`). Ao alterar uma, atualize a outra.
+- Antes de commitar: `rtk npm run typecheck`, `rtk npm run build` e `rtk npm run test:e2e` passando.
+- Commits separados por funcionalidade, em português (`feat:`, `fix:`, `chore:`…), sem trailer de coautoria.
