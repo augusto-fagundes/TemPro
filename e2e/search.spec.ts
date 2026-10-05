@@ -24,6 +24,25 @@ test.describe('busca e catálogo', () => {
     ).toBeVisible();
   });
 
+  test('sugestões carregam depois de parar de digitar', async ({ page }) => {
+    await page.goto('/');
+    await waitForAppReady(page);
+
+    const calls: string[] = [];
+    page.on('request', (request) => {
+      if (request.url().includes('/api/suggest')) calls.push(request.url());
+    });
+
+    const input = page.getByLabel('Qual serviço você procura?');
+    await input.pressSequentially('eletr', { delay: 20 });
+    await page.waitForTimeout(500);
+
+    expect(calls).toHaveLength(1);
+    await expect(page.getByRole('option', { name: /Eletricista/i }).first()).toBeVisible();
+    await page.getByRole('option', { name: /^Eletricista Categoria$/i }).click();
+    await expect(page).toHaveURL(/categoria=Eletricista/);
+  });
+
   test('busca por texto leva aos resultados', async ({ page }) => {
     await page.goto('/');
     await waitForAppReady(page);

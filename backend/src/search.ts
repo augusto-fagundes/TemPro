@@ -86,3 +86,54 @@ export function searchProviders(
     matchesFilters(provider, filters, cityTerms),
   );
 }
+
+export interface SearchSuggestion {
+  type: 'category' | 'provider';
+  label: string;
+  id?: string;
+  category?: string;
+}
+
+const SUGGEST_CATEGORY_LIMIT = 4;
+const SUGGEST_PROVIDER_LIMIT = 5;
+
+function fold(value: string): string {
+  return stripAccents(value).trim().toLowerCase();
+}
+
+/** Category names and provider names that contain `q`, categories first. */
+export function suggestMatches(
+  providers: PublicProvider[],
+  q: string,
+): SearchSuggestion[] {
+  const needle = fold(q);
+  if (!needle) return [];
+
+  const categories = [...new Set(providers.map((provider) => provider.category))]
+    .filter((name) => fold(name).includes(needle))
+    .sort((a, b) => a.localeCompare(b, 'pt-BR'))
+    .slice(0, SUGGEST_CATEGORY_LIMIT)
+    .map((label) => ({ type: 'category' as const, label }));
+
+  const byName = providers
+    .filter((provider) => fold(provider.name).includes(needle))
+    .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+  const byCategory = providers
+    .filter(
+      (provider) =>
+        !fold(provider.name).includes(needle) &&
+        fold(provider.category).includes(needle),
+    )
+    .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+
+  const people = [...byName, ...byCategory]
+    .slice(0, SUGGEST_PROVIDER_LIMIT)
+    .map((provider) => ({
+      type: 'provider' as const,
+      id: provider.id,
+      label: provider.name,
+      category: provider.category,
+    }));
+
+  return [...categories, ...people];
+}

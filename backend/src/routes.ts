@@ -13,6 +13,7 @@ import {
   profileSchema,
   registerSchema,
   searchQuerySchema,
+  suggestQuerySchema,
   servicePatchSchema,
   serviceSchema,
 } from './schemas';
@@ -67,6 +68,18 @@ router.get('/bootstrap', async (_req, res) => {
 
 router.get('/meta', async (_req, res) => {
   res.json(await store.buildMeta());
+});
+
+router.get('/suggest', async (req, res) => {
+  const query = suggestQuerySchema.parse(req.query);
+  const q = query.q.trim();
+  if (!q) {
+    res.json({ suggestions: [] });
+    return;
+  }
+  res.json({
+    suggestions: await store.suggest(q, query.city ?? DEFAULT_CITY),
+  });
 });
 
 router.get('/providers', async (req, res) => {

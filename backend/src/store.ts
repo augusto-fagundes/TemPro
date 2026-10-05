@@ -14,7 +14,12 @@ import {
   type PublicProvider,
 } from './mappers';
 import { formatPrice, listingPriceFromServices, type PriceType } from './pricing';
-import { searchProviders, type SearchFilters } from './search';
+import {
+  searchProviders,
+  suggestMatches,
+  type SearchFilters,
+  type SearchSuggestion,
+} from './search';
 import { SEED_PROVIDERS } from './data/seed-providers';
 import { normalizeFacebook, normalizeInstagram } from './social';
 import { getUserById } from './users';
@@ -44,6 +49,18 @@ export async function getProvider(id: string): Promise<PublicProvider> {
   });
   if (!row) throw new HttpError(404, 'Prestador não encontrado');
   return toPublicProvider(row);
+}
+
+export async function suggest(q: string, city: string): Promise<SearchSuggestion[]> {
+  const query = q.trim();
+  if (!query) return [];
+  const providers = await listProviders({
+    q: '',
+    city,
+    categories: [],
+    priceOnly: false,
+  });
+  return suggestMatches(providers, query);
 }
 
 export async function listCategories() {

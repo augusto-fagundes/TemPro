@@ -12,11 +12,13 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { CategoryIcon } from "../components/CategoryIcon";
 import { CitySearch } from "../components/CitySearch";
+import { SearchSuggestList, useSearchSuggest } from "../components/SearchSuggest";
+import type { SearchSuggestion } from "../lib/api";
 import { useCatalog } from "../context/ProfileProvider";
 import { useMeta } from "../context/CatalogProvider";
 import { useToast } from "../context/ToastProvider";
 import { countInCategory } from "../lib/search";
-import { searchPath } from "../lib/urls";
+import { providerPath, searchPath } from "../lib/urls";
 import { DEFAULT_CITY } from "../types";
 
 /* Two fixed lines, not a wrap: "Encontre quem / resolve." is the shape the
@@ -120,6 +122,14 @@ export function HomePage() {
   const [query, setQuery] = useState("");
   const [city, setCity] = useState(DEFAULT_CITY);
   const navigate = useNavigate();
+  const suggest = useSearchSuggest(query, city);
+  const pickSuggestion = (item: SearchSuggestion) => {
+    if (item.type === "provider" && item.id) {
+      navigate(providerPath(item.id));
+      return;
+    }
+    navigate(searchPath({ categories: [item.label], city }));
+  };
   const toast = useToast();
   const catalog = useCatalog();
   const { categories: ALL_CATEGORIES } = useMeta();
@@ -230,7 +240,7 @@ export function HomePage() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Qual serviço você procura?"
-                autoComplete="off"
+                {...suggest.inputProps(pickSuggestion)}
               />
               <button
                 type="submit"
@@ -251,6 +261,13 @@ export function HomePage() {
                   <path d="m16 16 4.5 4.5" />
                 </svg>
               </button>
+              <SearchSuggestList
+                id={suggest.listId}
+                items={suggest.items}
+                active={suggest.active}
+                onActive={suggest.setActive}
+                onPick={pickSuggestion}
+              />
             </div>
 
             {/* The city is a correction to a search, not a second search box:

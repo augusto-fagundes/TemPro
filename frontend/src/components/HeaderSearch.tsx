@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
-import { filtersFromParams, paramsFromFilters } from '../lib/urls';
+import { SearchSuggestList, useSearchSuggest } from './SearchSuggest';
+import type { SearchSuggestion } from '../lib/api';
+import { filtersFromParams, paramsFromFilters, providerPath, searchPath } from '../lib/urls';
 
 /**
  * The app's single search field once you are past the landing page. The home
@@ -19,8 +21,18 @@ export function HeaderSearch() {
   const onResults = pathname === '/buscar';
   const current = onResults ? (params.get('q') ?? '') : '';
   const [draft, setDraft] = useState(current);
+  const city = filtersFromParams(onResults ? params : new URLSearchParams()).city;
+  const suggest = useSearchSuggest(draft, city);
 
   useEffect(() => setDraft(current), [current]);
+
+  const pick = (item: SearchSuggestion) => {
+    if (item.type === 'provider' && item.id) {
+      navigate(providerPath(item.id));
+      return;
+    }
+    navigate(searchPath({ categories: [item.label], city }));
+  };
 
   const submit = () => {
     const base = filtersFromParams(onResults ? params : new URLSearchParams());
@@ -66,10 +78,18 @@ export function HeaderSearch() {
         onChange={(e) => setDraft(e.target.value)}
         placeholder="Buscar serviço, cidade ou nome"
         aria-label="Buscar serviço, cidade ou nome"
+        {...suggest.inputProps(pick)}
       />
       <button type="submit" className="sp-headersearch__go">
         Buscar
       </button>
+      <SearchSuggestList
+        id={suggest.listId}
+        items={suggest.items}
+        active={suggest.active}
+        onActive={suggest.setActive}
+        onPick={pick}
+      />
     </form>
   );
 }

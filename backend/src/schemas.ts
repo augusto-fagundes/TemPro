@@ -56,6 +56,11 @@ export const registerSchema = z.object({
   }),
 });
 
+export const suggestQuerySchema = z.object({
+  q: z.string().optional().default(''),
+  city: z.string().optional(),
+});
+
 export const citySearchSchema = z.object({
   q: z.string().optional().default(''),
   limit: z.coerce.number().int().min(1).max(50).optional().default(20),

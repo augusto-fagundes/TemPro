@@ -7,6 +7,13 @@ import type {
   RegisterInput,
 } from '../types';
 
+export interface SearchSuggestion {
+  type: 'category' | 'provider';
+  label: string;
+  id?: string;
+  category?: string;
+}
+
 export interface CityMatch {
   id: number;
   name: string;
@@ -96,6 +103,11 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 export const api = {
   bootstrap: () => request<BootstrapPayload>('/bootstrap'),
+
+  suggest: (q: string, city: string) =>
+    request<{ suggestions: SearchSuggestion[] }>(
+      `/suggest?q=${encodeURIComponent(q)}&city=${encodeURIComponent(city)}`,
+    ).then((body) => body.suggestions),
 
   searchCities: (q: string, limit = 20) =>
     request<{ cities: CityMatch[] }>(
