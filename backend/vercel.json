@@ -1,4 +1,7 @@
 {
+  "git": {
+    "deploymentEnabled": false
+  },
   "framework": "express",
   "installCommand": "cd .. && npm ci"
 }

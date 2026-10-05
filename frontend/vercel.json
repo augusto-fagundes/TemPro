@@ -1,4 +1,7 @@
 {
+  "git": {
+    "deploymentEnabled": false
+  },
   "framework": "vite",
   "installCommand": "cd .. && npm ci",
   "buildCommand": "npm run build",
